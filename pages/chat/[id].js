@@ -1,22 +1,32 @@
 import Head from 'next/head';
 import { useAuthState } from 'react-firebase-hooks/auth';
+import { useCollection } from 'react-firebase-hooks/firestore';
 import styled from 'styled-components';
 import ChatScreen from '../../components/ChatScreen';
 import Sidebar from '../../components/Sidebar';
+import Topbar from '../../components/Topbar';
 import { auth, db } from '../../firebase';
 import getRecipientEmail from '../../utils/getRecipientEmail';
 
 function Chat({ chat, messages }) {
     const [user] = useAuthState(auth)
+    const [recipientSnapshot] = useCollection(db.collection('users').where('email', '==', getRecipientEmail(chat.users, user)))
+
+    const recipient = recipientSnapshot?.docs?.[0]?.data()
+
     return (
         <Container>
             <Head>
-                <title>Chat with {getRecipientEmail(chat.users, user)}</title>
+                <title>Chat with {recipient?.userName ? recipient?.userName : getRecipientEmail(chat.users, user)}</title>
             </Head>
-            <Sidebar />
-            <ChatContainer>
-                <ChatScreen chat={chat} messages={messages}/>
-            </ChatContainer>
+            <Topbar />
+            <Body>
+                <Sidebar />
+                <ChatContainer>
+                    <ChatScreen chat={chat} messages={messages}/>
+                </ChatContainer>
+            </Body>
+            
         </Container>
     )
 }
@@ -52,20 +62,26 @@ export async function getServerSideProps(context) {
     return {
         props: {
             messages: JSON.stringify(messages),
-            chat: chat
+            chat,
         }
     }
 }
 
 
 const Container = styled.div`
-    display: flex;
+    
 `;
+
+const Body = styled.div`
+    display: flex;
+    height: 90vh;
+`;
+
 
 const ChatContainer = styled.div`
     flex: 1;
     overflow: scroll;
-    height: 100vh;
+    height: 90vh;
     ::-webkit-scrollbar {
         display: none;
     }

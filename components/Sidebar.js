@@ -1,13 +1,13 @@
-import { Avatar, Button, IconButton } from '@material-ui/core';
+import { IconButton } from '@material-ui/core';
 import styled from "styled-components";
-import ChatIcon from '@material-ui/icons/Chat';
-import ExitToAppIcon from '@material-ui/icons/ExitToApp';import SearchIcon from '@material-ui/icons/Search';
+import PersonAddIcon from '@material-ui/icons/PersonAdd';
+import SearchIcon from '@material-ui/icons/Search';
 import * as EmailValidator from 'email-validator';
 import { auth, db } from '../firebase';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { useCollection } from 'react-firebase-hooks/firestore';
 import Chat from './Chat';
-import Loading from './Loading';
+import PageLoad from './PageLoad';
 import { useState } from 'react';
 
 function Sidebar() {
@@ -40,32 +40,18 @@ function Sidebar() {
 
     return (
         <Container>
-            {/* <Header>
-                <UserAvatar src={user.photoURL}/>
-                <IconContainer>
-                    <IconButton onClick={createChat}>
-                        <ChatIcon />
-                    </IconButton>
-                    <IconButton onClick={() => auth.signOut()}>
-                        <ExitToAppIcon />
-                    </IconButton>
-                </IconContainer>
-            </Header> */}
 
             <Search>
-                <SearchIcon style={{ margin:'0 5px' }}/>
+                <SearchIcon style={{ margin:'0 5px',fontSize: 25 }}/>
                 <SearchInput placeholder='Enter an email to add friend' value={input} onChange={e => setInput(e.target.value.toLowerCase())}/>
                 <SendIconButton disabled={!input} type="submit" onClick={createChat}>
                     <IconButton style={{ padding:'5px', color:'#b5b7c2' }}>
-                        <ChatIcon  />
+                        <PersonAddIcon style={{ fontSize: 25 }} />
                     </IconButton>
                 </SendIconButton>
             </Search>
-
-            {/* <SidebarButton onClick={createChat} >Start a new chat</SidebarButton> */}
-
             {
-                loading ? <Loading /> : chatsSnapshot?.docs.map((chat) => (
+                loading ? <PageLoad /> : chatsSnapshot?.docs.map((chat) => (
                 <Chat key={chat.id} id={chat.id} users={chat.data().users} />
             ))
             }
@@ -77,9 +63,10 @@ export default Sidebar
 
 const Container = styled.div`
     flex: 0.55;
+    height: 92vh;
     border-right: 1px solid #ececec;
-    min-width: 300px;
-    max-width: 350px;
+    min-width: 30rem;
+    max-width: 35rem;
     overflow: scroll;
 
     ::-webkit-scrollbar {
@@ -98,46 +85,22 @@ const SendIconButton = styled.button`
 `;
 
 const Search = styled.form`
+    position: sticky;
+    z-index: 200;
+    top: 0;
+    background-color: white;
     color: #b5b7c2;
     display: flex;
     align-items: center;
-    padding: 20px 30px;
+    padding: 2rem 3rem;
     border-radius: 2px;
 `;
-
-// const SidebarButton = styled(Button)`
-//     width: 100%;
-//     && {
-//         border-top: 1px solid whitesmoke;
-//         border-bottom: 1px solid whitesmoke; 
-//     }
-// `;
-
 
 const SearchInput = styled.input`
     color: #b5b7c2;
     outline-width: 0;
+    height: 4rem;
     border: none;
     flex: 1;
-    font-size: 14px;
+    font-size: 1.4rem;
 `;
-
-// const Header = styled.div`
-//     display: flex;
-//     position: sticky;
-//     top: 0;
-//     background-color: white;
-//     z-index: 1;
-//     justify-content: space-between;
-//     align-items: center;
-//     padding: 15px;
-//     height: 80px;
-//     border-bottom: 1px solid whitesmoke;
-// `;
-
-// const UserAvatar = styled(Avatar)`
-
-// `;
-
-// const IconContainer = styled.div`
-// `;

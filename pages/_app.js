@@ -2,12 +2,14 @@ import { auth, db } from '../firebase'
 import firebase from 'firebase'
 import { useAuthState } from 'react-firebase-hooks/auth';
 import '../styles/globals.css'
-import Login from './login';
-import Loading from '../components/Loading';
+import Index from './login';
+import  PageLoad  from '../components/PageLoad';
 import { useEffect } from 'react';
+import { useRouter } from 'next/router';
 
 function MyApp({ Component, pageProps }) {
   const [user, loading] = useAuthState(auth)
+  const router = useRouter()
 
   useEffect(() => {
     if (user) {
@@ -20,8 +22,8 @@ function MyApp({ Component, pageProps }) {
     }
   }, [user])
 
-  if (loading) return <Loading />
-  if (!user) return <Login />
+  if (loading) return <PageLoad />
+  if (!user) return <Index />
 
   return <Component {...pageProps} />
 }

@@ -8,10 +8,12 @@ import AttachFileIcon from '@material-ui/icons/AttachFile';
 import SendIcon from '@material-ui/icons/Send';
 import Message from './Message';
 import { useCollection } from 'react-firebase-hooks/firestore';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import firebase from 'firebase';
 import getRecipientEmail from '../utils/getRecipientEmail';
 import TimeAgo from 'timeago-react'
+import TextareaAutosize from 'react-textarea-autosize';
+import IsTyping from './IsTyping';
 
 
 function ChatScreen({ chat, messages }) {
@@ -54,7 +56,7 @@ function ChatScreen({ chat, messages }) {
         } 
         else {
             return JSON.parse(messages).map((message) => {
-                scrollToBottom()
+                
                 return (
                 <Message
                     key={message.id}
@@ -93,8 +95,41 @@ function ChatScreen({ chat, messages }) {
         scrollToBottom()
     }
 
+    useEffect(() => {
+        db.collection('chats').doc(router.query.id).collection('isTyping').doc(user.email).set({input})
+    }, [input])
+
     const recipient = recipientSnapshot?.docs?.[0]?.data();
     const recipientEmail = getRecipientEmail(chat.users, user)
+
+
+    
+    const [isTyping, setIsTyping] = useState('');
+    const [isTypingSnapshot] = useCollection(
+        db
+        .collection("chats")
+        .doc(router.query.id)
+        .collection("isTyping")
+        .doc(recipientEmail)
+    );
+
+    useEffect(() => {
+        const unsubscribe = () => {
+            if (isTypingSnapshot) {
+                const data = isTypingSnapshot.data()?.input
+                setIsTyping(data)
+            } 
+        };
+
+        return unsubscribe()
+    }, [isTypingSnapshot])
+
+    const typing = () => {
+        if (isTyping?.length > 0 && user !== user.email) {
+            return <IsTyping>...</IsTyping>
+        }
+    }
+
     
     return (
         <Container>
@@ -102,10 +137,10 @@ function ChatScreen({ chat, messages }) {
                 {recipient ? (
                     <Avatar src={recipient?.photoURL} />
                 ) : (
-                    <Avatar>{recipientEmail[0]}</Avatar>
+                    <Avatar style={{ fontSize: 25 }} >{recipientEmail[0]}</Avatar>
                 )}
                 <HeaderInfo>
-                    <h3>{recipient?.userName ? recipient?.userName : recipientEmail}</h3>
+                    <h4>{recipient?.userName ? recipient?.userName : recipientEmail}</h4>
                     {recipientSnapshot ? (
                         recipient?.lastSeen?.toDate() ? (
                             <p>Active <TimeAgo datetime={recipient?.lastSeen?.toDate()} /></p>
@@ -116,17 +151,17 @@ function ChatScreen({ chat, messages }) {
                 </HeaderInfo>
                 <HeaderIcons>
                     <IconButton style={{color:'#b5b7c2'}}>
-                        <AttachFileIcon />
+                        <AttachFileIcon style={{ fontSize: 25 }}/>
                     </IconButton>
                     <IconButton style={{color:'#b5b7c2'}} onClick={removeConversation}>
-                        <DeleteForeverIcon />
+                        <DeleteForeverIcon style={{ fontSize: 25 }}/>
                     </IconButton>
                 </HeaderIcons>
             </Header>
 
             <MessageContainer>
                 {showMessages()}
-
+                {typing()}
                 <EndOfMessages ref={endOfMessagesRef}/>
             </MessageContainer>
 
@@ -134,7 +169,7 @@ function ChatScreen({ chat, messages }) {
                 <Input placeholder='Write a message...' value={input} onChange={e => setInput(e.target.value)}/>
                 <SendIconButton disabled={!input} type="submit" onClick={sendMessage}>
                     <IconButton style={{ marginRight: '10px' }}>
-                        <SendIcon />
+                        <SendIcon style={{ fontSize: 25 }} />
                     </IconButton>
                 </SendIconButton>
             </InputContainer>
@@ -157,21 +192,25 @@ const SendIconButton = styled.button`
 const InputContainer = styled.form`
     display: flex;
     align-items: center;
-    padding: 15px;
+    padding: 1rem 1.5rem;
     position: sticky;
     bottom: 0;
     background-color: #fafafa;
     z-index: 100;
 `;
 
-const Input = styled.input`
+const Input = styled(TextareaAutosize)`
+    overflow: hidden;
+    resize: none;
     flex: 1;
-    font-size: 16px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.6rem;
+    height: 5rem;
     outline: 0;
     border: none;
     background-color: #fafafa;
-    margin-left: 15px;
-    margin-right: 15px;
+    margin-left: 1.5rem;
+    margin-right: 1.5rem;
 `;
 
 const Header = styled.div`
@@ -180,23 +219,25 @@ const Header = styled.div`
     z-index: 100;
     top: 0;
     display: flex;
-    padding: 11px 30px;
-    height: 80px;
+    padding: 1.1rem 3rem;
+    height: 8rem;
     align-items: center;
+    line-height: 1;
 `;
 
 const HeaderInfo = styled.div`
-    margin-left: 10px;
+    margin-left: 1rem;
     flex: 1;
-    color: #9a9dac;
+    color: #b5b7c2;
 
-    > h3 {
-        margin: 14px 0 0 0;
+    > h4 {
+        color: #8f8ce7;
+        margin: 1.4rem 0 .5rem 0;
     }
 
     > p {
-        margin: 0 0 14px 0;
-        font-size: 14px;
+        margin: .5rem 0 1.4rem 0;
+        font-size: 1.4rem;
         color: gray;
     }
 `;
@@ -209,6 +250,6 @@ const HeaderIcons = styled.div`
 `;
 
 const MessageContainer = styled.div`
-    padding: 30px;
+    padding: 3rem;
     min-height: 90vh
 `;

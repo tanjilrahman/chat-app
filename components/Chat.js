@@ -28,19 +28,19 @@ function Chat({ id, users }) {
     
 
     const enterChat = () => {
-        router.push(`/chat/${id}`)
+        router.push(`/chats/${id}`)
     }
 
     const showLastMessage = messagesSnapshot?.docs?.[0]?.data()
     const recipient = recipientSnapshot?.docs?.[0]?.data()
     const recipientEmail = getRecipientEmail(users, user)
-    console.log(showLastMessage)
+    
     return (
         <Container onClick={enterChat}>
             {recipient ? (
-                <UserAvatar style={{ height: '45px', width: '45px' }} src={recipient?.photoURL} />
+                <UserAvatar style={{ height: '4.5rem', width: '4.5rem' }} src={recipient?.photoURL} />
             ) : (
-                <UserAvatar style={{ height: '45px', width: '45px' }} src={recipient?.photoURL}>{recipientEmail[0]}</UserAvatar>
+                <UserAvatar style={{ height: '4.5rem', width: '4.5rem', fontSize: 25 }} src={recipient?.photoURL}>{recipientEmail[0]}</UserAvatar>
             )}
             
             <ChatInfo>
@@ -59,7 +59,7 @@ const Container = styled.div`
     display: flex;
     align-items: center;
     cursor: pointer;
-    padding: 15px 30px;
+    padding: 1.5rem 3rem;
     word-wrap: break-word;
     line-height: 1;
 
@@ -69,8 +69,8 @@ const Container = styled.div`
 `;
 
 const UserAvatar = styled(Avatar)`
-    margin: 5px;
-    margin-right: 15px;
+    margin: .5rem;
+    margin-right: 1.5rem;
 `;
 
 const ChatInfo = styled.div`
@@ -80,10 +80,17 @@ const ChatInfo = styled.div`
     > h4 {
         color: #8f8ce7;
         margin: 0 0 3px 0;
+        max-width: 220px;
     }
     > p {
         color: #828d8f;
-        font-size: 14px;
+        font-size: 1.4rem;
         margin: 3px 0 0 0;
+        text-overflow: ellipsis;
+        word-wrap: break-word;
+        white-space: nowrap;
+        overflow: hidden;
+        line-height: 1;
+        max-width: 20rem;
     }
 `;

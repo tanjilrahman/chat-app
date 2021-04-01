@@ -37,7 +37,7 @@ function Topbar() {
 export default Topbar;
 
 const Container = styled.div`
-    height: 9vh;
+    height: 10vh;
     background-color: white;
     color: #b5b7c2;
     position: sticky;
@@ -46,6 +46,10 @@ const Container = styled.div`
     display: flex;
     border-bottom: 1px solid #ececec;
     padding: 1rem 3rem;
+
+    @media (min-width: 45rem) {
+        height: 9vh;
+    }
 `;
 
 const LogoContainer = styled.div`
@@ -55,7 +59,6 @@ const LogoContainer = styled.div`
     flex: 0.5;
     color: #8f8ce7;
     font-size: 2rem;
-    margin-left: .5rem;
     line-height: 1;
 
     @media (min-width: 45rem) {

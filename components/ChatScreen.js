@@ -219,8 +219,8 @@ const Header = styled.div`
     z-index: 100;
     top: 0;
     display: flex;
-    padding: 1.1rem 3rem;
-    height: 8rem;
+    padding: 1.1rem 2rem;
+    height: 7rem;
     align-items: center;
     line-height: 1;
 `;
@@ -251,6 +251,6 @@ const HeaderIcons = styled.div`
 `;
 
 const MessageContainer = styled.div`
-    padding: 3rem;
+    padding: 2rem;
     min-height: 75vh
 `;

@@ -78,19 +78,27 @@ const Container = styled.div`
 
 const Body = styled.div`
     display: flex;
-    height: 91vh;
+    height: 90vh;
+
+    @media (min-width: 45rem) {
+        height: 91vh;
+    }
 `;
 
 
 const ChatContainer = styled.div`
     flex: 1;
     overflow: scroll;
-    height: 91vh;
+    height: 90vh;
     ::-webkit-scrollbar {
         display: none;
     }
     --ms-overflow-style: none;
     scrollbar-width: none;
+
+    @media (min-width: 45rem) {
+        height: 91vh;
+    }
 `;
 
 const ResponsiveSidebar = styled.div`

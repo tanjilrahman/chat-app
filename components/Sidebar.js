@@ -63,7 +63,7 @@ export default Sidebar
 
 const Container = styled.div`
     flex: 1;
-    height: 91vh;
+    height: 90vh;
     overflow: scroll;
     
     ::-webkit-scrollbar {
@@ -74,6 +74,7 @@ const Container = styled.div`
     scrollbar-width: none;
 
     @media (min-width: 45rem) {
+        height: 90vh;
         flex: 0.55;
         min-width: 30rem;
         max-width: 35rem;
@@ -99,6 +100,7 @@ const Search = styled.form`
     align-items: center;
     padding: 1.5rem 3rem;
     border-radius: 2px;
+    height: 7rem;
     border-bottom: 1px solid #ececec;
     @media (min-width: 45rem) {
         border: none;

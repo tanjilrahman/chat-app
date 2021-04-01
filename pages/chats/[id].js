@@ -21,7 +21,10 @@ function Chat({ chat, messages }) {
             </Head>
             <Topbar />
             <Body>
-                <Sidebar />
+                <ResponsiveSidebar>
+                    <Sidebar />
+                </ResponsiveSidebar>
+                
                 <ChatContainer>
                     <ChatScreen chat={chat} messages={messages}/>
                 </ChatContainer>
@@ -75,17 +78,27 @@ const Container = styled.div`
 
 const Body = styled.div`
     display: flex;
-    height: 92vh;
+    height: 91vh;
 `;
 
 
 const ChatContainer = styled.div`
     flex: 1;
     overflow: scroll;
-    height: 92vh;
+    height: 91vh;
     ::-webkit-scrollbar {
         display: none;
     }
     --ms-overflow-style: none;
     scrollbar-width: none;
+`;
+
+const ResponsiveSidebar = styled.div`
+    display: none;
+
+    @media (min-width: 45rem) {
+        min-width: 30rem;
+        max-width: 50rem;
+        display: block;
+    }
 `;

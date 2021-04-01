@@ -42,11 +42,11 @@ function Sidebar() {
         <Container>
 
             <Search>
-                <SearchIcon style={{ margin:'0 5px',fontSize: 25 }}/>
+                <SearchIcon style={{ margin:'0 5px',fontSize: 30 }}/>
                 <SearchInput placeholder='Enter an email to add friend' value={input} onChange={e => setInput(e.target.value.toLowerCase())}/>
                 <SendIconButton disabled={!input} type="submit" onClick={createChat}>
                     <IconButton style={{ padding:'5px', color:'#b5b7c2' }}>
-                        <PersonAddIcon style={{ fontSize: 25 }} />
+                        <PersonAddIcon style={{ fontSize: 30 }} />
                     </IconButton>
                 </SendIconButton>
             </Search>
@@ -62,19 +62,23 @@ function Sidebar() {
 export default Sidebar
 
 const Container = styled.div`
-    flex: 0.55;
-    height: 92vh;
-    border-right: 1px solid #ececec;
-    min-width: 30rem;
-    max-width: 35rem;
+    flex: 1;
+    height: 91vh;
     overflow: scroll;
-
+    
     ::-webkit-scrollbar {
         display: none;
     }
 
     --ms-overflow-style: none;
     scrollbar-width: none;
+
+    @media (min-width: 45rem) {
+        flex: 0.55;
+        min-width: 30rem;
+        max-width: 35rem;
+        border-right: 1px solid #ececec;
+    }
 `;
 
 const SendIconButton = styled.button`
@@ -89,11 +93,16 @@ const Search = styled.form`
     z-index: 200;
     top: 0;
     background-color: white;
+    line-height: 1;
     color: #b5b7c2;
     display: flex;
     align-items: center;
-    padding: 2rem 3rem;
+    padding: 1.5rem 3rem;
     border-radius: 2px;
+    border-bottom: 1px solid #ececec;
+    @media (min-width: 45rem) {
+        border: none;
+    }
 `;
 
 const SearchInput = styled.input`
@@ -102,5 +111,5 @@ const SearchInput = styled.input`
     height: 4rem;
     border: none;
     flex: 1;
-    font-size: 1.4rem;
+    font-size: 1.6rem;
 `;

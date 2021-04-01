@@ -1,10 +1,11 @@
 import { Avatar, IconButton } from '@material-ui/core';
 import styled from 'styled-components';
-import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import { useAuthState } from 'react-firebase-hooks/auth';
+import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import { auth } from '../firebase';
 import { useRouter } from 'next/router';
-import Link from 'next/link'
+import Link from 'next/link';
+import {ThreeBounce} from 'better-react-spinkit';
 
 function Topbar() {
     const [user] = useAuthState(auth)
@@ -18,16 +19,16 @@ function Topbar() {
         <Container>
             <Link href="/">
                 <LogoContainer>
-                    <Logo src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" />
+                    {/* <ResponsiveIconButton>
+                        <ArrowBackIosIcon style={{ fontSize: 30 }}/>
+                    </ResponsiveIconButton> */}
+                    
                     <h3>Chat App</h3>
                 </LogoContainer>
             </Link>
             <UserInfo>
-                <UserAvatar src={user.photoURL}/>
+                <UserAvatar style={{ height: '4.5rem', width: '4.5rem' }} onClick={sighOut} src={user.photoURL}/>
                 <p>{user.displayName}</p>
-                <IconButton style={{color:'#b5b7c2'}} onClick={sighOut}>
-                    <ExitToAppIcon style={{ fontSize: 25 }} />
-                </IconButton>
             </UserInfo>
         </Container>
     )
@@ -36,7 +37,7 @@ function Topbar() {
 export default Topbar;
 
 const Container = styled.div`
-    height: 8vh;
+    height: 9vh;
     background-color: white;
     color: #b5b7c2;
     position: sticky;
@@ -51,30 +52,58 @@ const LogoContainer = styled.div`
     cursor: pointer;
     display: flex;
     align-items: center;
-    flex: 0.2;
+    flex: 0.5;
+    color: #8f8ce7;
+    font-size: 2rem;
+    margin-left: .5rem;
+    line-height: 1;
+
+    @media (min-width: 45rem) {
+        flex: 0.2;
+    }
+    
 `;
 
-const Logo = styled.img`
-    height: 5.5rem;
-    width: 5.5rem;
-    margin-right: .5rem;
+const ResponsiveIconButton = styled.div`
+    align-items: center;
+    line-height: 1;
+    @media (min-width: 45rem) {
+        display: none;
+    }
+`;
+
+const Logo = styled(ThreeBounce)`
+    text-align: center;
 `;
 
 const UserInfo = styled.div`
     display: flex;
-    flex: 0.8;
+    flex: 0.5;
     width: 18rem;
     justify-content: flex-end;
     align-items: center;
     right: 0;
 
+    @media (min-width: 45rem) {
+        flex: 0.8;
+    }
+
     > p {
-        line-height: 1;
-        margin-left: .8rem;
-        font-weight: 500;
+        display: none;
+        @media (min-width: 45rem) {
+            display: block;
+            line-height: 1;
+            margin-left: .8rem;
+            font-weight: 500;
+        }
     }
 `;
 
-const UserAvatar = styled(Avatar)``;
+const UserAvatar = styled(Avatar)`
+    cursor: pointer;
+    :hover {
+        opacity: .8;
+    }
+`;
 
 

@@ -9,7 +9,7 @@ function Home() {
     <div>
       <Head>
         <title>Chat app</title>
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" href="/favicon.png" />
         
       </Head>
       <Topbar />

@@ -15,10 +15,14 @@ function Inbox() {
 export default Inbox;
 
 const Container = styled.div`
-    flex: 1;
-    display: grid;
-    place-items: center;
-    height: 92vh;
+    display: none;
+
+    @media (min-width: 45rem) {
+        flex: 1;
+        display: grid;
+        place-items: center;
+        height: 92vh;
+    }
 `;
 
 const Info = styled.div`

@@ -62,7 +62,6 @@ const Container = styled.div`
     padding: 1.5rem 3rem;
     word-wrap: break-word;
     line-height: 1;
-
     :hover {
         background-color: #fafafa;
     }
@@ -81,16 +80,24 @@ const ChatInfo = styled.div`
         color: #8f8ce7;
         margin: 0 0 3px 0;
         max-width: 220px;
+        font-size: 1.8rem;
     }
     > p {
         color: #828d8f;
-        font-size: 1.4rem;
+        font-size: 1.6rem;
         margin: 3px 0 0 0;
         text-overflow: ellipsis;
         word-wrap: break-word;
         white-space: nowrap;
         overflow: hidden;
         line-height: 1;
-        max-width: 20rem;
+        max-width: 28rem;
+        
+        @media (min-width: 45rem) {
+            font-size: 1.4rem;
+            max-width: 20rem;
+        }
     }
+
+    
 `;

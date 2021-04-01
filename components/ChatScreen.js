@@ -126,7 +126,7 @@ function ChatScreen({ chat, messages }) {
 
     const typing = () => {
         if (isTyping?.length > 0 && user !== user.email) {
-            return <IsTyping>...</IsTyping>
+            return <IsTyping photo={recipient?.photoURL} />
         }
     }
 
@@ -166,10 +166,10 @@ function ChatScreen({ chat, messages }) {
             </MessageContainer>
 
             <InputContainer>
-                <Input placeholder='Write a message...' value={input} onChange={e => setInput(e.target.value)}/>
+                <Input maxRows={8} autoFocus placeholder='Write a message...' value={input} onChange={e => setInput(e.target.value)}/>
                 <SendIconButton disabled={!input} type="submit" onClick={sendMessage}>
-                    <IconButton style={{ marginRight: '10px' }}>
-                        <SendIcon style={{ fontSize: 25 }} />
+                    <IconButton>
+                        <SendIcon style={{ fontSize: 25, color: '#b5b7c2'}} />
                     </IconButton>
                 </SendIconButton>
             </InputContainer>
@@ -243,6 +243,7 @@ const HeaderInfo = styled.div`
 `;
 
 const EndOfMessages = styled.div`
+    padding-bottom: 2rem;
 `;
 
 const HeaderIcons = styled.div`
@@ -251,5 +252,5 @@ const HeaderIcons = styled.div`
 
 const MessageContainer = styled.div`
     padding: 3rem;
-    min-height: 90vh
+    min-height: 75vh
 `;

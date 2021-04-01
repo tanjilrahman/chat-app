@@ -18,7 +18,6 @@ function Login() {
             </Head>
 
             <LoginContainer>
-                <Logo src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" />
                 <Button style={{ fontSize: 15 }} onClick={signIn} variant="outlined">Sign in with Google</Button>
             </LoginContainer>
         </Container>
@@ -42,10 +41,4 @@ const LoginContainer = styled.div`
     background-color: white;
     border-radius: 3rem;
     box-shadow: 0 2px 3px rgba(0, 0, 0, 0.12), 0 2px 3px rgba(0, 0, 0, 0.12);
-`;
-
-const Logo = styled.img`
-    height: 20rem;
-    width: 20rem;
-    margin-bottom: 5rem;
 `;

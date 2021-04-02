@@ -207,7 +207,7 @@ const InputContainer = styled.form`
     display: flex;
     align-items: center;
     padding: 1rem 1.5rem;
-    position: sticky;
+    position: fixed;
     bottom: 0;
     background-color: #fafafa;
     z-index: 100;
@@ -229,10 +229,10 @@ const Input = styled(TextareaAutosize)`
 `;
 
 const Header = styled.div`
-    position: sticky;
+    position: fixed;
     background-color: white;
     z-index: 100;
-    top: 0;
+    /* top: 0; */
     display: flex;
     padding: 1.1rem 2rem;
     height: 7rem;
@@ -267,9 +267,9 @@ const HeaderIcons = styled.div`
 
 const MessageContainer = styled.div`
     padding: 2rem;
-    min-height: 80.8vh;
+    /* min-height: 80.8vh;
 
     @media (min-width: 45rem) {
         min-height: 76vh
-    }
+    } */
 `;

@@ -235,7 +235,8 @@ const Input = styled(TextareaAutosize)`
 `;
 
 const Header = styled.div`
-    position: sticky;
+    position: fixed;
+    width: 100%;
     background-color: white;
     z-index: 100;
     top: 0;
@@ -244,6 +245,10 @@ const Header = styled.div`
     height: 7rem;
     align-items: center;
     line-height: 1;
+
+    @media (min-width: 45rem) {
+        position: sticky;
+    }
 `;
 
 const HeaderInfo = styled.div`

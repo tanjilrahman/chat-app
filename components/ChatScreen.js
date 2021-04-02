@@ -172,7 +172,7 @@ function ChatScreen({ chat, messages }) {
             </MessageContainer>
 
             <InputContainer>
-                <Input maxRows={8} autoFocus placeholder='Write a message...' value={input} onChange={e => setInput(e.target.value)}/>
+                <Input maxRows={8} placeholder='Write a message...' value={input} onChange={e => setInput(e.target.value)}/>
                 <SendIconButton disabled={!input} type="submit" onClick={sendMessage}>
                     <IconButton>
                         <SendIcon style={{ fontSize: 25, color: '#b5b7c2'}} />

@@ -168,7 +168,7 @@ function ChatScreen({ chat, messages }) {
             <MessageContainer>
                 {showMessages()}
                 {typing()}
-                <EndOfMessages ref={endOfMessagesRef}/>
+                {/* <EndOfMessages ref={endOfMessagesRef}/> */}
             </MessageContainer>
 
             <InputContainer>

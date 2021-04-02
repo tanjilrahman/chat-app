@@ -21,7 +21,7 @@ const Container = styled.div`
         flex: 1;
         display: grid;
         place-items: center;
-        height: 92vh;
+        height: 100vh;
     }
 `;
 

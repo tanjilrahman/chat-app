@@ -208,10 +208,16 @@ const InputContainer = styled.form`
     display: flex;
     align-items: center;
     padding: .5rem 1.5rem;
-    position: sticky;
+    position: fixed;
+    width: 100%;
+    flex: 1;
     bottom: 0;
     background-color: #fafafa;
     z-index: 100;
+
+    @media (min-width: 45rem) {
+        position: sticky;
+    }
 `;
 
 const Input = styled(TextareaAutosize)`
@@ -258,7 +264,12 @@ const HeaderInfo = styled.div`
 `;
 
 const EndOfMessages = styled.div`
-    padding-bottom: 2rem;
+    padding-bottom: 8rem;
+
+    @media (min-width: 45rem) {
+        padding-bottom: 2rem;
+    }
+    
 `;
 
 const HeaderIcons = styled.div`
@@ -267,5 +278,4 @@ const HeaderIcons = styled.div`
 
 const MessageContainer = styled.div`
     padding: 2rem;
-    min-height: 75vh
 `;

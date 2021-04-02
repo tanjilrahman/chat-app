@@ -25,6 +25,5 @@ export default Home;
 
 const Body = styled.div`
   display: flex;
-  margin-top: 8rem;
 `;
 

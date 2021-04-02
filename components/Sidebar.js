@@ -42,7 +42,7 @@ function Sidebar() {
         <Container>
 
             <Search>
-                <SearchIcon style={{ margin:'0 5px',fontSize: 30 }}/>
+                <SearchIcon style={{ fontSize: 30 }}/>
                 <SearchInput placeholder='Enter an email to add friend' value={input} onChange={e => setInput(e.target.value.toLowerCase())}/>
                 <SendIconButton disabled={!input} type="submit" onClick={createChat}>
                     <IconButton style={{ padding:'5px', color:'#b5b7c2' }}>
@@ -63,9 +63,9 @@ export default Sidebar
 
 const Container = styled.div`
     flex: 1;
-    height: 91vh;
     overflow: scroll;
-    
+    padding-top: 8rem;
+    height: 100vh;
     ::-webkit-scrollbar {
         display: none;
     }
@@ -74,9 +74,7 @@ const Container = styled.div`
     scrollbar-width: none;
 
     @media (min-width: 45rem) {
-        flex: 0.55;
-        min-width: 30rem;
-        max-width: 35rem;
+        width: 35rem;
         border-right: 1px solid #ececec;
     }
 `;
@@ -97,7 +95,7 @@ const Search = styled.form`
     color: #b5b7c2;
     display: flex;
     align-items: center;
-    padding: 1.5rem 3rem;
+    padding: 1.5rem 2.5rem;
     border-radius: 2px;
     height: 7rem;
     border-bottom: 1px solid #ececec;

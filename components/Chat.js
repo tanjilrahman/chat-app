@@ -59,7 +59,7 @@ const Container = styled.div`
     display: flex;
     align-items: center;
     cursor: pointer;
-    padding: 1.5rem 3rem;
+    padding: 1.5rem 2rem;
     word-wrap: break-word;
     line-height: 1;
     :hover {

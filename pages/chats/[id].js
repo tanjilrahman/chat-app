@@ -81,11 +81,6 @@ const Container = styled.div`
 
 const Body = styled.div`
     display: flex;
-    margin-top: 0;
-
-    @media (min-width: 45rem) {
-        margin-top: 8rem;
-    }
 `;
 
 
@@ -98,9 +93,9 @@ const ChatContainer = styled.div`
     }
     --ms-overflow-style: none;
     scrollbar-width: none;
-    
+
     @media (min-width: 45rem) {
-        height: 91vh;
+        padding-top: 8rem;
     }
 `;
 

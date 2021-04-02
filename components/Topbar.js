@@ -19,10 +19,6 @@ function Topbar() {
         <Container>
             <Link href="/">
                 <LogoContainer>
-                    {/* <ResponsiveIconButton>
-                        <ArrowBackIosIcon style={{ fontSize: 30 }}/>
-                    </ResponsiveIconButton> */}
-                    
                     <h3>Chat App</h3>
                 </LogoContainer>
             </Link>
@@ -39,7 +35,7 @@ export default Topbar;
 const Container = styled.div`
     height: 8rem;
     background-color: white;
-    color: #b5b7c2;
+    color: #A5A9B6;
     position: fixed;
     width: 100vw;
     top: 0;

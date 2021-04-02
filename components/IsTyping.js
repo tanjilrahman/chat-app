@@ -32,7 +32,7 @@ const Typing = styled.div`
     line-height: 1;
     padding: 1.3rem 1.7rem;
     border-radius: 1.5rem;
-    margin: 2rem 1rem;
+    margin: 1.7rem 1rem;
 
     -webkit-box-shadow: 0px 4px 5px 0px rgba(204,204,204,1);
     -moz-box-shadow: 0px 4px 5px 0px rgba(204,204,204,1);

@@ -74,7 +74,8 @@ const Container = styled.div`
     scrollbar-width: none;
 
     @media (min-width: 45rem) {
-        width: 35rem;
+        min-width: 35rem;
+        max-width: 35rem;
         border-right: 1px solid #ececec;
     }
 `;

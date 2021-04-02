@@ -65,6 +65,7 @@ const Container = styled.div`
     :hover {
         background-color: #fafafa;
     }
+    -webkit-tap-highlight-color: transparent;
 `;
 
 const UserAvatar = styled(Avatar)`

@@ -56,7 +56,7 @@ const MessageElement = styled.p`
     width: fit-content;
     padding: 1.3rem 1.7rem;
     border-radius: 1.5rem;
-    margin: 2rem 1rem;
+    margin: 1.7rem 1rem;
     max-width: 60vw;
     position: relative;
     text-align: left;
@@ -84,12 +84,10 @@ const Receiver = styled(MessageElement)`
 `;
 
 const Timestamp = styled.span`
-    color: #535565;
+    color: #A5A9B6;
     padding: 1rem;
     font-size: 1.2rem;
     position: absolute;
-    bottom: -3.5rem;
-    
     width: 60vw;
     
 `;
@@ -97,11 +95,11 @@ const Timestamp = styled.span`
 const SenderTimestamp = styled(Timestamp)`
     text-align: right;
     right: 0;
-    bottom: -3.4rem;
+    bottom: -3.2rem;
 `;
 
 const ReceiverTimestamp = styled(Timestamp)`
-    
+    bottom: -3.3rem;
     text-align: left;
     left: 0;
 `;

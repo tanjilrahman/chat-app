@@ -269,10 +269,10 @@ const HeaderInfo = styled.div`
 `;
 
 const EndOfMessages = styled.div`
-    padding-bottom: 8rem;
+    padding-bottom: 7rem;
 
     @media (min-width: 45rem) {
-        padding-bottom: 2rem;
+        padding-bottom: 1.6rem;
     }
     
 `;
@@ -282,5 +282,9 @@ const HeaderIcons = styled.div`
 `;
 
 const MessageContainer = styled.div`
-    padding: 2rem;
+    padding: 7.5rem 2rem 2rem 2rem;
+
+    @media (min-width: 45rem) {
+        padding: 2rem;
+    }
 `;

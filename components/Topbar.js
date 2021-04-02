@@ -1,7 +1,6 @@
 import { Avatar, IconButton } from '@material-ui/core';
 import styled from 'styled-components';
 import { useAuthState } from 'react-firebase-hooks/auth';
-import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import { auth } from '../firebase';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
@@ -19,10 +18,6 @@ function Topbar() {
         <Container>
             <Link href="/">
                 <LogoContainer>
-                    {/* <ResponsiveIconButton>
-                        <ArrowBackIosIcon style={{ fontSize: 30 }}/>
-                    </ResponsiveIconButton> */}
-                    
                     <h3>Chat App</h3>
                 </LogoContainer>
             </Link>
@@ -65,14 +60,6 @@ const LogoContainer = styled.div`
         flex: 0.2;
     }
     
-`;
-
-const ResponsiveIconButton = styled.div`
-    align-items: center;
-    line-height: 1;
-    @media (min-width: 45rem) {
-        display: none;
-    }
 `;
 
 const Logo = styled(ThreeBounce)`

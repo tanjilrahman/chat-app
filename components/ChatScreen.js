@@ -3,6 +3,7 @@ import { useRouter } from 'next/router';
 import styled from 'styled-components';
 import { auth, db } from '../firebase';
 import { Avatar, IconButton } from '@material-ui/core';
+import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import AttachFileIcon from '@material-ui/icons/AttachFile';
 import SendIcon from '@material-ui/icons/Send';
@@ -14,7 +15,7 @@ import getRecipientEmail from '../utils/getRecipientEmail';
 import TimeAgo from 'timeago-react'
 import TextareaAutosize from 'react-textarea-autosize';
 import IsTyping from './IsTyping';
-
+import Link from 'next/link';
 
 function ChatScreen({ chat, messages }) {
     const [user] = useAuthState(auth);
@@ -134,6 +135,11 @@ function ChatScreen({ chat, messages }) {
     return (
         <Container>
             <Header>
+                <Link href="/">
+                    <ResponsiveIconButton>
+                        <ArrowBackIosIcon style={{ fontSize: 30, color:'#b5b7c2' }}/>
+                    </ResponsiveIconButton>
+                </Link>
                 {recipient ? (
                     <Avatar src={recipient?.photoURL} />
                 ) : (
@@ -182,6 +188,14 @@ export default ChatScreen;
 const Container = styled.div`
 `;
 
+const ResponsiveIconButton = styled.div`
+    align-items: center;
+    line-height: 1;
+    @media (min-width: 45rem) {
+        display: none;
+    }
+`;
+
 const SendIconButton = styled.button`
     border: none;
     padding: 0;
@@ -197,6 +211,7 @@ const InputContainer = styled.form`
     bottom: 0;
     background-color: #fafafa;
     z-index: 100;
+    height: 7rem;
 `;
 
 const Input = styled(TextareaAutosize)`
@@ -252,5 +267,9 @@ const HeaderIcons = styled.div`
 
 const MessageContainer = styled.div`
     padding: 2rem;
-    min-height: 75vh
+    min-height: 80.8vh;
+
+    @media (min-width: 45rem) {
+        min-height: 76vh
+    }
 `;

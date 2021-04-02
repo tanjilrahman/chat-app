@@ -19,7 +19,10 @@ function Chat({ chat, messages }) {
             <Head>
                 <title>Chat with {recipient?.userName ? recipient?.userName : getRecipientEmail(chat.users, user)}</title>
             </Head>
-            <Topbar />
+            <ResponsiveTopbar>
+                <Topbar />
+            </ResponsiveTopbar>
+            
             <Body>
                 <ResponsiveSidebar>
                     <Sidebar />
@@ -78,8 +81,7 @@ const Container = styled.div`
 
 const Body = styled.div`
     display: flex;
-    height: 90vh;
-
+    
     @media (min-width: 45rem) {
         height: 91vh;
     }
@@ -89,7 +91,7 @@ const Body = styled.div`
 const ChatContainer = styled.div`
     flex: 1;
     overflow: scroll;
-    height: 90vh;
+    height: 100vh;
     ::-webkit-scrollbar {
         display: none;
     }
@@ -107,6 +109,14 @@ const ResponsiveSidebar = styled.div`
     @media (min-width: 45rem) {
         min-width: 30rem;
         max-width: 50rem;
+        display: block;
+    }
+`;
+
+const ResponsiveTopbar = styled.div`
+    display: none;
+
+    @media (min-width: 45rem) {
         display: block;
     }
 `;

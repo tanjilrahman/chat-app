@@ -264,11 +264,11 @@ const HeaderInfo = styled.div`
 `;
 
 const EndOfMessages = styled.div`
-    /* padding-bottom: 8rem;
+    padding-bottom: 8rem;
 
     @media (min-width: 45rem) {
         padding-bottom: 2rem;
-    } */
+    }
     
 `;
 

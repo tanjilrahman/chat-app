@@ -31,7 +31,7 @@ function ChatScreen({ chat, messages }) {
         .orderBy("timestamp", "asc")
     );
     const [recipientSnapshot] = useCollection(
-        db.collection('users').where('email', '==', getRecipientEmail(chat.users, user))
+        db.collection('users').where('email', '==', getRecipientEmail(JSON.parse(chat).users, user))
     )
 
     const scrollToBottom = () => {
@@ -72,6 +72,18 @@ function ChatScreen({ chat, messages }) {
     const removeConversation = () => {
         const retVal = confirm("Are you sure you want to remove this conversation?");
         if ( retVal == true ) {
+            const messageRef = db.collection('chats').doc(router.query.id).collection('messages')
+            const userIsTypingRef = db.collection('chats').doc(router.query.id).collection('isTyping').doc(user.email)
+            const recipientIsTypingRef = db.collection('chats').doc(router.query.id).collection('isTyping').doc(recipientEmail)
+
+            messagesSnapshot?.docs.map((message) => {
+                messageRef.doc(message.id).delete()
+            })
+
+            userIsTypingRef.delete()
+            recipientIsTypingRef.delete()
+            
+            
             db.collection("chats").doc(router.query.id).delete().then(() => router.push('/'))
         }
     }
@@ -79,19 +91,31 @@ function ChatScreen({ chat, messages }) {
     const sendMessage = (e) => {
         e.preventDefault();
 
+        //easter egg!
+        if (input === '*#easter') {
+            return db.collection('users').get().then(snap => {
+                setInput('')
+                return alert(`Total users: ${snap.size}`)
+            });
+        }
+
         //update the last seen
         db.collection('users').doc(user.uid).set({
             lastSeen: firebase.firestore.FieldValue.serverTimestamp()
         }, {merge: true});
 
+        //add the message
         db.collection('chats').doc(router.query.id).collection('messages').add({
             timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-            message: input,
+            message: input.trim(),
             user: user.email,
             photoURL: user.photoURL
         })
 
-        // console.log(messagesSnapshotResult)
+        //update the timestamp
+        db.collection('chats').doc(router.query.id).set({
+            timestamp: firebase.firestore.FieldValue.serverTimestamp()
+        }, {merge: true});
 
         setInput('')
         scrollToBottom()
@@ -102,7 +126,7 @@ function ChatScreen({ chat, messages }) {
     }, [input])
 
     const recipient = recipientSnapshot?.docs?.[0]?.data();
-    const recipientEmail = getRecipientEmail(chat.users, user)
+    const recipientEmail = getRecipientEmail(JSON.parse(chat).users, user)
 
 
     
@@ -264,7 +288,7 @@ const HeaderInfo = styled.div`
     > p {
         margin: .5rem 0 1.4rem 0;
         font-size: 1.4rem;
-        color: gray;
+        color: #A5A9B6;
     }
 `;
 

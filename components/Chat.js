@@ -65,7 +65,7 @@ const Container = styled.div`
     :hover {
         background-color: #fafafa;
     }
-    -webkit-tap-highlight-color: transparent;
+    -webkit-tap-highlight-color: #fafafa;
 `;
 
 const UserAvatar = styled(Avatar)`
@@ -84,7 +84,7 @@ const ChatInfo = styled.div`
         font-size: 1.8rem;
     }
     > p {
-        color: #828d8f;
+        color: #A5A9B6;
         font-size: 1.6rem;
         margin: 3px 0 0 0;
         text-overflow: ellipsis;

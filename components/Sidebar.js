@@ -7,6 +7,7 @@ import { auth, db } from '../firebase';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { useCollection } from 'react-firebase-hooks/firestore';
 import Chat from './Chat';
+import firebase from 'firebase';
 import PageLoad from './PageLoad';
 import { useState } from 'react';
 
@@ -23,6 +24,7 @@ function Sidebar() {
         if (EmailValidator.validate(input) && !chatAlreadyExists(input) && input !== user.email) {
             db.collection('chats').add({
                 users: [user.email, input],
+                timestamp: firebase.firestore.FieldValue.serverTimestamp(),
             })
 
             setInput('')
@@ -33,10 +35,26 @@ function Sidebar() {
         
     }
 
+    const chatMaps = chatsSnapshot?.docs.map((chat) => ({
+        id: chat.id,
+        data: chat.data()
+    }))
+
+    
+    const chats = chatMaps?.sort((chatA, chatB) => {
+            const chatATimestamp = chatA.data.timestamp?.toDate().getTime()
+            const chatBTimestamp = chatB.data.timestamp?.toDate().getTime()
+            if (chatATimestamp > chatBTimestamp) {
+                return -1
+            } if (chatBTimestamp > chatATimestamp) {
+                return 1
+            }
+        })
+    
+
     const chatAlreadyExists = (recipientEmail) => 
         !!chatsSnapshot?.docs.find((chat) => chat.data().users.find((user) => user === recipientEmail)?.length > 0
     );
-    
 
     return (
         <Container>
@@ -50,11 +68,11 @@ function Sidebar() {
                     </IconButton>
                 </SendIconButton>
             </Search>
-            {
-                loading ? <PageLoad /> : chatsSnapshot?.docs.map((chat) => (
-                <Chat key={chat.id} id={chat.id} users={chat.data().users} />
-            ))
-            }
+            { loading ? <PageLoad /> : (
+                chats?.map((chat) => (
+                    <Chat key={chat.id} id={chat.id} users={chat.data.users} />
+                ))
+            ) }
         </Container>
     )
 }
@@ -93,7 +111,7 @@ const Search = styled.form`
     top: 0;
     background-color: white;
     line-height: 1;
-    color: #b5b7c2;
+    color: #A5A9B6;
     display: flex;
     align-items: center;
     padding: 1.5rem 2.5rem;
@@ -106,7 +124,7 @@ const Search = styled.form`
 `;
 
 const SearchInput = styled.input`
-    color: #b5b7c2;
+    color: #A5A9B6;
     outline-width: 0;
     height: 4rem;
     border: none;

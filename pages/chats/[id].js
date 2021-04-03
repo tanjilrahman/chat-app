@@ -10,14 +10,14 @@ import getRecipientEmail from '../../utils/getRecipientEmail';
 
 function Chat({ chat, messages }) {
     const [user] = useAuthState(auth)
-    const [recipientSnapshot] = useCollection(db.collection('users').where('email', '==', getRecipientEmail(chat.users, user)))
+    const [recipientSnapshot] = useCollection(db.collection('users').where('email', '==', getRecipientEmail(JSON.parse(chat).users, user)))
 
     const recipient = recipientSnapshot?.docs?.[0]?.data()
 
     return (
         <Container>
             <Head>
-                <title>Chat with {recipient?.userName ? recipient?.userName : getRecipientEmail(chat.users, user)}</title>
+                <title>Chat with {recipient?.userName ? recipient?.userName : getRecipientEmail(JSON.parse(chat).users, user)}</title>
             </Head>
             <ResponsiveTopbar>
                 <Topbar />
@@ -69,7 +69,7 @@ export async function getServerSideProps(context) {
     return {
         props: {
             messages: JSON.stringify(messages),
-            chat,
+            chat: JSON.stringify(chat)
         }
     }
 }

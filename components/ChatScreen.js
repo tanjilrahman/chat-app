@@ -16,11 +16,14 @@ import TimeAgo from 'timeago-react'
 import TextareaAutosize from 'react-textarea-autosize';
 import IsTyping from './IsTyping';
 import Link from 'next/link';
+import {v4 as uuid} from 'uuid';
+import HighlightOffIcon from '@material-ui/icons/HighlightOff';
 
 
 function ChatScreen({ chat, messages }) {
     const [user] = useAuthState(auth);
     const [input, setInput] = useState('');
+    const [upload, setUpload] = useState(null);
     const endOfMessagesRef = useRef(null);
     const router = useRouter();
     const [messagesSnapshot] = useCollection(
@@ -88,8 +91,8 @@ function ChatScreen({ chat, messages }) {
         }
     }
 
-    const sendMessage = (e) => {
-        e.preventDefault();
+    const sendMessage = async (e) => {
+        e.preventDefault()
 
         //easter egg!
         if (input === '*#easter') {
@@ -97,6 +100,15 @@ function ChatScreen({ chat, messages }) {
                 setInput('')
                 return alert(`Total users: ${snap.size}`)
             });
+        }
+
+        //upload logic
+        let downloadURL;
+        if (upload !== null) {
+            const id = uuid()
+            const storageRef = firebase.storage().ref('images').child(id);
+            await storageRef.put(upload);
+            downloadURL = await storageRef.getDownloadURL()
         }
 
         //update the last seen
@@ -109,7 +121,8 @@ function ChatScreen({ chat, messages }) {
             timestamp: firebase.firestore.FieldValue.serverTimestamp(),
             message: input.trim(),
             user: user.email,
-            photoURL: user.photoURL
+            photoURL: user.photoURL,
+            downloadURL: downloadURL ? downloadURL : ''
         })
 
         //update the timestamp
@@ -117,8 +130,18 @@ function ChatScreen({ chat, messages }) {
             timestamp: firebase.firestore.FieldValue.serverTimestamp()
         }, {merge: true});
 
-        setInput('')
-        scrollToBottom()
+        setInput('');
+        setUpload(null);
+        scrollToBottom();
+    }
+
+    const uploadFile = (e) => {
+        setUpload(e.target.files[0]);
+        e.target.value = null;
+    }
+
+    const canceluploadFile = (e) => {
+        setUpload(null);
     }
 
     useEffect(() => {
@@ -162,7 +185,10 @@ function ChatScreen({ chat, messages }) {
             <Header>
                 <Link href="/">
                     <ResponsiveIconButton>
-                        <ArrowBackIosIcon style={{ fontSize: 30, color: '#b5b7c2' }}/>
+                        <IconButton style={{ paddingRight: 0, color: '#b5b7c2' }}>
+                            <ArrowBackIosIcon style={{ fontSize: 30, color: '#b5b7c2' }}/>
+                        </IconButton>
+                        
                     </ResponsiveIconButton>
                 </Link>
                 {recipient ? (
@@ -181,9 +207,26 @@ function ChatScreen({ chat, messages }) {
                     )}
                 </HeaderInfo>
                 <HeaderIcons>
-                    <IconButton style={{color:'#b5b7c2'}}>
-                        <AttachFileIcon style={{ fontSize: 25 }}/>
-                    </IconButton>
+                    {
+                        upload !== null ?
+                        <IconButton style={{color:'#b5b7c2'}} aria-label="upload picture">
+                            <HighlightOffIcon style={{ fontSize: 25, color: '#dc2f02' }} onClick={canceluploadFile}/>
+                        </IconButton>
+                        : ''
+                    }
+                    <input style={{ display: 'none' }} id="icon-button-file" type="file" onChange={uploadFile} />
+                    <label htmlFor="icon-button-file">
+                        <IconButton style={{color:'#b5b7c2'}} aria-label="upload picture" component="span">
+
+                            {
+                                upload !== null ?
+                                <AttachFileIcon style={{ fontSize: 25, color: '#8f8ce7' }}/> 
+                                : <AttachFileIcon style={{ fontSize: 25 }}/>
+                            }
+                            
+                        </IconButton>
+                    </label>
+                    
                     <IconButton style={{color:'#b5b7c2'}} onClick={removeConversation}>
                         <DeleteForeverIcon style={{ fontSize: 25 }}/>
                     </IconButton>
@@ -198,9 +241,14 @@ function ChatScreen({ chat, messages }) {
 
             <InputContainer>
                 <Input maxRows={8} autoFocus placeholder='Write a message...' value={input} onChange={e => setInput(e.target.value)}/>
-                <SendIconButton disabled={!input} type="submit" onClick={sendMessage}>
+                <SendIconButton disabled={!input && !upload} type="submit" onClick={sendMessage}>
                     <IconButton>
-                        <SendIcon style={{ fontSize: 25, color: '#b5b7c2'}} />
+                    {
+                        upload !== null ?
+                        <SendIcon style={{ fontSize: 25, color: '#8f8ce7' }}/> 
+                        : <SendIcon style={{ fontSize: 25, color: '#b5b7c2'}} />
+                    }
+                        
                     </IconButton>
                 </SendIconButton>
             </InputContainer>
@@ -213,8 +261,12 @@ export default ChatScreen;
 const Container = styled.div`
 `;
 
+const FileInfo = styled.p`
+`;
+
 const ResponsiveIconButton = styled.div`
     align-items: center;
+
     line-height: 1;
     @media (min-width: 45rem) {
         display: none;
@@ -265,12 +317,13 @@ const Header = styled.div`
     z-index: 100;
     top: 0;
     display: flex;
-    padding: 1.1rem 2rem;
+    padding: 1rem;
     height: 7rem;
     align-items: center;
     line-height: 1;
 
     @media (min-width: 45rem) {
+        padding: 1.1rem 2rem;
         position: sticky;
     }
 `;

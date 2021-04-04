@@ -42,14 +42,14 @@ function Sidebar() {
 
     
     const chats = chatMaps?.sort((chatA, chatB) => {
-            const chatATimestamp = chatA.data.timestamp?.toDate().getTime()
-            const chatBTimestamp = chatB.data.timestamp?.toDate().getTime()
-            if (chatATimestamp > chatBTimestamp) {
-                return -1
-            } if (chatBTimestamp > chatATimestamp) {
-                return 1
-            }
-        })
+        const chatATimestamp = chatA.data.timestamp?.toDate().getTime()
+        const chatBTimestamp = chatB.data.timestamp?.toDate().getTime()
+        if (chatATimestamp > chatBTimestamp) {
+            return -1
+        } if (chatBTimestamp > chatATimestamp) {
+            return 1
+        }
+    })
     
 
     const chatAlreadyExists = (recipientEmail) => 

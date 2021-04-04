@@ -1,7 +1,6 @@
-import { Avatar, IconButton } from '@material-ui/core';
+import { Avatar } from '@material-ui/core';
 import styled from 'styled-components';
 import { useAuthState } from 'react-firebase-hooks/auth';
-import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import { auth } from '../firebase';
 import { useRouter } from 'next/router';
 import Link from 'next/link';

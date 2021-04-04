@@ -20,6 +20,7 @@
     "react-firebase-hooks": "^3.0.3",
     "react-textarea-autosize": "^8.3.2",
     "styled-components": "^5.2.1",
-    "timeago-react": "^3.0.2"
+    "timeago-react": "^3.0.2",
+    "uuid": "^8.3.2"
   }
 }

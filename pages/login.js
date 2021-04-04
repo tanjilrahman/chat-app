@@ -17,9 +17,8 @@ function Login() {
                 <title>Login</title>
             </Head>
 
-            <LoginContainer>
-                <Button style={{ fontSize: 15 }} onClick={signIn} variant="outlined">Sign in with Google</Button>
-            </LoginContainer>
+                <Button  variant="contained"
+        color="primary" style={{ fontSize: 15 }} onClick={signIn} >Sign in with Google</Button>
         </Container>
     )
 }

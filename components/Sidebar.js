@@ -2,38 +2,53 @@ import { IconButton } from '@material-ui/core';
 import styled from "styled-components";
 import PersonAddIcon from '@material-ui/icons/PersonAdd';
 import SearchIcon from '@material-ui/icons/Search';
-import * as EmailValidator from 'email-validator';
+
 import { auth, db } from '../firebase';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { useCollection } from 'react-firebase-hooks/firestore';
 import Chat from './Chat';
-import firebase from 'firebase';
+import User from './User';
 import PageLoad from './PageLoad';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 function Sidebar() {
-    const [user] = useAuthState(auth)
-    const userChatRef = db.collection('chats').where('users', 'array-contains', user.email)
-    const [chatsSnapshot, loading] = useCollection(userChatRef)
+    const [userLoggedIn] = useAuthState(auth)
     const [input, setInput] = useState('')
+    const [AllUsers, setAllUsers] = useState([])
 
-    const createChat = (e) => {
+    const userChatRef = db.collection('chats').where('users', 'array-contains', userLoggedIn.email);
+    const [chatsSnapshot, loading] = useCollection(userChatRef)
+
+    const usersRef = db.collection('users')
+    const [usersSnapshot] = useCollection(usersRef)
+
+    const searchUser = (e) => {
         e.preventDefault();
-        if (!input) return null;
-
-        if (EmailValidator.validate(input) && !chatAlreadyExists(input) && input !== user.email) {
-            db.collection('chats').add({
-                users: [user.email, input],
-                timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-            })
-
-            setInput('')
-        } else {
-            alert('Please enter a valid email!')
-        }
-
-        
+        const users = usersSnapshot?.docs.map((userSnapshot) => (userSnapshot.data()))
+        return filteredUsers(users, input)
     }
+    
+    
+    const filteredUsers = (users, input) => {
+        const AllUsers = users?.filter((user) => {
+            const users = user?.userName?.toLowerCase().includes(input.toLowerCase())
+            const hasInput = input.length > 0
+
+            return users && hasInput && !chatAlreadyExists(user.email) && userLoggedIn.email !== user.email
+        })
+        setAllUsers(AllUsers)
+    }
+
+    const chatAlreadyExists = (recipientEmail) => 
+        !!chatsSnapshot?.docs.find((chat) => chat.data().users.find((user) => user === recipientEmail)?.length > 0
+    );
+    
+    useEffect(() => {
+        const users = usersSnapshot?.docs.map((userSnapshot) => (userSnapshot.data()))
+        filteredUsers(users, input)
+    }, [input])
+
+    
 
     const chatMaps = chatsSnapshot?.docs.map((chat) => ({
         id: chat.id,
@@ -52,27 +67,32 @@ function Sidebar() {
     })
     
 
-    const chatAlreadyExists = (recipientEmail) => 
-        !!chatsSnapshot?.docs.find((chat) => chat.data().users.find((user) => user === recipientEmail)?.length > 0
-    );
-
     return (
         <Container>
-
             <Search>
                 <SearchIcon style={{ fontSize: 30 }}/>
-                <SearchInput placeholder='Enter an email to add friend' value={input} onChange={e => setInput(e.target.value.toLowerCase())}/>
-                <SendIconButton disabled={!input} type="submit" onClick={createChat}>
+                <SearchInput placeholder='Search people...' value={input} onChange={e => setInput(e.target.value.toLowerCase())}/>
+                {/* <SendIconButton disabled={!input} type="submit" onClick={searchUser}>
                     <IconButton style={{ padding:'5px', color:'#b5b7c2' }}>
                         <PersonAddIcon style={{ fontSize: 30 }} />
                     </IconButton>
-                </SendIconButton>
+                </SendIconButton> */}
             </Search>
-            { loading ? <PageLoad /> : (
-                chats?.map((chat) => (
-                    <Chat key={chat.id} id={chat.id} users={chat.data.users} />
-                ))
-            ) }
+            { loading ? <PageLoad /> :  
+                AllUsers?.length > 0 ? (
+                    <SearchResult>
+                        <SearchHead>Match</SearchHead>
+                        {AllUsers?.map((user) => (
+                            <User key={user.email} setInput={setInput} user={user} />
+                        ))}
+                    </SearchResult>
+                    
+                ) : (
+                    chats?.map((chat) => (
+                        <Chat key={chat.id} id={chat.id} users={chat.data.users} />
+                    ))
+                )
+            }
         </Container>
     )
 }
@@ -103,6 +123,17 @@ const SendIconButton = styled.button`
     padding: 0;
     margin: 0;
     background: none;
+`;
+
+const SearchResult = styled.div`
+    
+    
+`;
+
+const SearchHead = styled.h2`
+    margin: 0;
+    padding: 1rem 2.5rem 0 2.5rem;
+    color: #8f8ce7;
 `;
 
 const Search = styled.form`

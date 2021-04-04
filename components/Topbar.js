@@ -11,7 +11,10 @@ function Topbar() {
     const router = useRouter()
 
     const sighOut = () => {
-        auth.signOut().then(() => router.push('/login'))
+        const retVal = confirm("Are you sure you want to log out?");
+        if ( retVal == true ) {
+            auth.signOut().then(() => router.push('/login'))
+        }
     }
 
     return (

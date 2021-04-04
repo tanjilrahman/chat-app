@@ -103,12 +103,23 @@ function ChatScreen({ chat, messages }) {
         }
 
         //upload logic
-        let downloadURL;
+        let imageDownloadURL;
+        let attachmentDownloadURL;
         if (upload !== null) {
-            const id = uuid()
-            const storageRef = firebase.storage().ref('images').child(id);
-            await storageRef.put(upload);
-            downloadURL = await storageRef.getDownloadURL()
+            const fileType = upload['type'];
+            const validImageTypes = ['image/gif', 'image/jpeg', 'image/png'];
+
+            if (validImageTypes.includes(fileType)) {
+                const imageStorageRef = firebase.storage().ref('images').child(upload.name);
+                await imageStorageRef.put(upload);
+                imageDownloadURL = await imageStorageRef.getDownloadURL()
+            }
+
+            if (!validImageTypes.includes(fileType)) {
+                const attachmentStorageRef = firebase.storage().ref('attachment').child(upload.name);
+                await attachmentStorageRef.put(upload);
+                attachmentDownloadURL = await attachmentStorageRef.getDownloadURL()
+            }
         }
 
         //update the last seen
@@ -122,7 +133,8 @@ function ChatScreen({ chat, messages }) {
             message: input.trim(),
             user: user.email,
             photoURL: user.photoURL,
-            downloadURL: downloadURL ? downloadURL : ''
+            imageDownloadURL: imageDownloadURL ? imageDownloadURL : '',
+            attachmentDownloadURL: attachmentDownloadURL ? attachmentDownloadURL : ''
         })
 
         //update the timestamp
@@ -139,6 +151,7 @@ function ChatScreen({ chat, messages }) {
         setUpload(e.target.files[0]);
         e.target.value = null;
     }
+    console.log(upload)
 
     const canceluploadFile = (e) => {
         setUpload(null);

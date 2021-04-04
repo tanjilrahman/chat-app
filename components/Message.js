@@ -1,4 +1,5 @@
-import { Avatar } from '@material-ui/core';
+import { Avatar, Button } from '@material-ui/core';
+import GetAppIcon from '@material-ui/icons/GetApp';
 import moment from 'moment';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import styled from 'styled-components';
@@ -27,9 +28,24 @@ function Message({ user, message }) {
                 user !== userLoggedIn.email ? <TypeOfAvater style={{ height: '3.5rem', width: '3.5rem' }} src={message.photoURL}/> : ''
             }
             {
-                message.downloadURL ? 
+                message.imageDownloadURL || message.attachmentDownloadURL ? 
                 <TypeOfImg>
-                    <Img src={message.downloadURL}/>
+                    {
+                        message.imageDownloadURL ? 
+                            <a target="_blank" rel="noopener noreferrer" href={message.imageDownloadURL} download>
+                                <Img src={message.imageDownloadURL}/>
+                            </a>
+                        :   <Button
+                            href={message.attachmentDownloadURL}
+                            color="primary"
+                            size="large"
+                            fullWidth="100%"
+                            startIcon={<GetAppIcon />}
+                            >
+                            Attachment
+                            </Button>
+                        
+                    }
                     
                     {
                         message.message ? 
@@ -52,7 +68,7 @@ function Message({ user, message }) {
             
 
             {
-                message.message && !message.downloadURL ? 
+                message.message && !message.imageDownloadURL && !message.attachmentDownloadURL ? 
                 <TypeOfMessage>
                     {message.message}
                     <TypeOfTimestamp>

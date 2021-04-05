@@ -36,10 +36,10 @@ function Message({ user, message }) {
                                 <Img src={message.imageDownloadURL}/>
                             </a>
                         :   <Button
+                            style={{ width: '100%' }}
                             href={message.attachmentDownloadURL}
                             color="primary"
                             size="large"
-                            fullWidth="100%"
                             startIcon={<GetAppIcon />}
                             >
                             Attachment

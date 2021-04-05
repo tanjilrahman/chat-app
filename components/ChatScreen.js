@@ -16,7 +16,6 @@ import TimeAgo from 'timeago-react'
 import TextareaAutosize from 'react-textarea-autosize';
 import IsTyping from './IsTyping';
 import Link from 'next/link';
-import {v4 as uuid} from 'uuid';
 import HighlightOffIcon from '@material-ui/icons/HighlightOff';
 
 
@@ -151,7 +150,6 @@ function ChatScreen({ chat, messages }) {
         setUpload(e.target.files[0]);
         e.target.value = null;
     }
-    console.log(upload)
 
     const canceluploadFile = (e) => {
         setUpload(null);
@@ -254,8 +252,8 @@ function ChatScreen({ chat, messages }) {
 
             <InputContainer>
                 <Input maxRows={8} autoFocus placeholder='Write a message...' value={input} onChange={e => setInput(e.target.value)}/>
-                <SendIconButton disabled={!input && !upload} type="submit" onClick={sendMessage}>
-                    <IconButton>
+                <SendIconButton>
+                    <IconButton disabled={!input && !upload} type="submit" onClick={sendMessage}>
                     {
                         upload !== null ?
                         <SendIcon style={{ fontSize: 25, color: '#8f8ce7' }}/> 
@@ -286,7 +284,7 @@ const ResponsiveIconButton = styled.div`
     }
 `;
 
-const SendIconButton = styled.button`
+const SendIconButton = styled.div`
     border: none;
     padding: 0;
     margin: 0;

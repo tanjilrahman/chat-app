@@ -31,10 +31,10 @@ function Sidebar() {
     
     const filteredUsers = (users, input) => {
         const AllUsers = users?.filter((user) => {
-            const users = user?.userName?.toLowerCase().includes(input.toLowerCase())
+            const users = user?.user.userName?.toLowerCase().includes(input.toLowerCase())
             const hasInput = input.length > 0
 
-            return users && hasInput && !chatAlreadyExists(user.email) && userLoggedIn.email !== user.email
+            return users && hasInput && !chatAlreadyExists(user.user.email) && userLoggedIn.email !== user.user.email
         })
         setAllUsers(AllUsers)
     }
@@ -44,7 +44,10 @@ function Sidebar() {
     );
     
     useEffect(() => {
-        const users = usersSnapshot?.docs.map((userSnapshot) => (userSnapshot.data()))
+        const users = usersSnapshot?.docs.map((userSnapshot) => ({
+            uid: userSnapshot.id,
+            user: userSnapshot.data()
+        }))
         filteredUsers(users, input)
     }, [input])
 
@@ -83,7 +86,7 @@ function Sidebar() {
                     <SearchResult>
                         <SearchHead>Match</SearchHead>
                         {AllUsers?.map((user) => (
-                            <User key={user.email} setInput={setInput} user={user} />
+                            <User key={user.user.email} setInput={setInput} user={user} />
                         ))}
                     </SearchResult>
                     

@@ -1,14 +1,29 @@
-import { Avatar } from '@material-ui/core';
+import { Avatar, IconButton } from '@material-ui/core';
 import styled from 'styled-components';
 import { useAuthState } from 'react-firebase-hooks/auth';
-import { auth } from '../firebase';
+import { auth, db } from '../firebase';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
-import {ThreeBounce} from 'better-react-spinkit';
+import NotificationsNoneIcon from '@material-ui/icons/NotificationsNone';
+import NotificationsActiveIcon from '@material-ui/icons/NotificationsActive';
+import { useEffect, useState } from 'react';
+import { useCollection } from 'react-firebase-hooks/firestore';
 
-function Topbar() {
-    const [user] = useAuthState(auth)
-    const router = useRouter()
+function Topbar({ handleOpen }) {
+    const [user] = useAuthState(auth);
+    const router = useRouter();
+    const [hasRequests, setHasRequests] = useState(false)
+
+    const userLoggedInRequestsRef = db.collection('users').doc(user.uid).collection('friendRequests')
+    const [requestsSnapshot] = useCollection(userLoggedInRequestsRef)
+
+    useEffect(() => {
+        if (requestsSnapshot?.docs.length > 0) {
+            setHasRequests(true)
+        } else {
+            setHasRequests(false)
+        }
+    }, [requestsSnapshot])
 
     const sighOut = () => {
         const retVal = confirm("Are you sure you want to log out?");
@@ -24,7 +39,17 @@ function Topbar() {
                     <h3>Chat App</h3>
                 </LogoContainer>
             </Link>
+            
             <UserInfo>
+                {
+                    hasRequests ? <IconButton onClick={handleOpen}>
+                        <NotificationsActiveIcon style={{ fontSize: 30, color: '#8f8ce7' }} /> 
+                    </IconButton> : 
+                    <IconButton onClick={handleOpen}>
+                        <NotificationsNoneIcon style={{ fontSize: 30, color: '#A5A9B6' }} /> 
+                    </IconButton>
+                }
+                
                 <UserAvatar style={{ height: '4.5rem', width: '4.5rem' }} onClick={sighOut} src={user.photoURL}/>
                 <p>{user.displayName}</p>
             </UserInfo>
@@ -60,18 +85,6 @@ const LogoContainer = styled.div`
         flex: 0.2;
     }
     
-`;
-
-const ResponsiveIconButton = styled.div`
-    align-items: center;
-    line-height: 1;
-    @media (min-width: 45rem) {
-        display: none;
-    }
-`;
-
-const Logo = styled(ThreeBounce)`
-    text-align: center;
 `;
 
 const UserInfo = styled.div`

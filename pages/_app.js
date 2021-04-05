@@ -5,11 +5,9 @@ import '../styles/globals.css'
 import Index from './login';
 import  PageLoad  from '../components/PageLoad';
 import { useEffect } from 'react';
-import { useRouter } from 'next/router';
 
 function MyApp({ Component, pageProps }) {
-  const [user, loading] = useAuthState(auth)
-  const router = useRouter()
+  const [user, loading] = useAuthState(auth);
 
   useEffect(() => {
     if (user) {
@@ -20,7 +18,7 @@ function MyApp({ Component, pageProps }) {
         lastSeen: firebase.firestore.FieldValue.serverTimestamp()
       }, {merge: true})
     }
-  }, [user])
+  }, [user]);
 
   if (loading) return <PageLoad />
   if (!user) return <Index />

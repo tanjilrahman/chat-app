@@ -1,8 +1,10 @@
 import Head from 'next/head';
+import { useState } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { useCollection } from 'react-firebase-hooks/firestore';
 import styled from 'styled-components';
 import ChatScreen from '../../components/ChatScreen';
+import RequestDialog from '../../components/RequestDialog';
 import Sidebar from '../../components/Sidebar';
 import Topbar from '../../components/Topbar';
 import { auth, db } from '../../firebase';
@@ -14,13 +16,18 @@ function Chat({ chat, messages }) {
 
     const recipient = recipientSnapshot?.docs?.[0]?.data()
 
+    const [open, setOpen] = useState(false);
+
+    const handleOpen = () => setOpen(true)
+    const handleClose = () => setOpen(false)
+
     return (
         <Container>
             <Head>
                 <title>Chat with {recipient?.userName ? recipient?.userName : getRecipientEmail(JSON.parse(chat).users, user)}</title>
             </Head>
             <ResponsiveTopbar>
-                <Topbar />
+                <Topbar handleOpen={handleOpen} />
             </ResponsiveTopbar>
             
             <Body>
@@ -33,7 +40,8 @@ function Chat({ chat, messages }) {
                 </ChatContainer>
                 
             </Body>
-            
+
+            <RequestDialog open={open} onClose={handleClose}/>
         </Container>
     )
 }

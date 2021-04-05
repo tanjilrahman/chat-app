@@ -5,12 +5,24 @@ import Sidebar from '../components/Sidebar';
 import Topbar from '../components/Topbar';
 import RequestDialog from '../components/RequestDialog';
 import { useState } from 'react';
+import AlertDialog from '../components/AlertDialog';
 
 function Home() {
+  //RequestDialog
   const [open, setOpen] = useState(false);
 
   const handleOpen = () => setOpen(true)
   const handleClose = () => setOpen(false)
+
+  //AlertDialog
+  const [AlertOpen, setAlertOpen] = useState(false);
+
+  const handleClickOpen = () => {
+    setAlertOpen(true);
+  };
+  const AlertHandleClose = () => {
+    setAlertOpen(false);
+  };
   return (
     <div>
       <Head>
@@ -18,11 +30,12 @@ function Home() {
         <link rel="icon" href="/favicon.png" />
         
       </Head>
-      <Topbar handleOpen={handleOpen}/>
+      <Topbar handleOpen={handleOpen} handleClickOpen={handleClickOpen}/>
       <Body>
         <Sidebar />
         <Inbox />
       </Body>
+      <AlertDialog open={AlertOpen} handleClose={AlertHandleClose}/>
       <RequestDialog open={open} onClose={handleClose}/>
     </div>
   )

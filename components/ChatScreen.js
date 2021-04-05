@@ -2,7 +2,7 @@ import { useAuthState } from 'react-firebase-hooks/auth';
 import { useRouter } from 'next/router';
 import styled from 'styled-components';
 import { auth, db } from '../firebase';
-import { Avatar, IconButton } from '@material-ui/core';
+import { Avatar, Button, Dialog, IconButton } from '@material-ui/core';
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import AttachFileIcon from '@material-ui/icons/AttachFile';
 import SendIcon from '@material-ui/icons/Send';
@@ -43,6 +43,15 @@ function ChatScreen({ chat, messages }) {
         })
     }
 
+    const [open, setAlertOpen] = useState(false);
+
+    const handleClickOpen = () => {
+        setAlertOpen(true);
+    };
+    const AlertHandleClose = () => {
+        setAlertOpen(false);
+    };
+
     
     const showMessages = () => {
         if (messagesSnapshot) {
@@ -72,22 +81,19 @@ function ChatScreen({ chat, messages }) {
     }
 
     const removeConversation = () => {
-        const retVal = confirm("Are you sure you want to remove this conversation?");
-        if ( retVal == true ) {
-            const messageRef = db.collection('chats').doc(router.query.id).collection('messages')
-            const userIsTypingRef = db.collection('chats').doc(router.query.id).collection('isTyping').doc(user.email)
-            const recipientIsTypingRef = db.collection('chats').doc(router.query.id).collection('isTyping').doc(recipientEmail)
+        const messageRef = db.collection('chats').doc(router.query.id).collection('messages')
+        const userIsTypingRef = db.collection('chats').doc(router.query.id).collection('isTyping').doc(user.email)
+        const recipientIsTypingRef = db.collection('chats').doc(router.query.id).collection('isTyping').doc(recipientEmail)
 
-            messagesSnapshot?.docs.map((message) => {
-                messageRef.doc(message.id).delete()
-            })
+        messagesSnapshot?.docs.map((message) => {
+            messageRef.doc(message.id).delete()
+        })
 
-            userIsTypingRef.delete()
-            recipientIsTypingRef.delete()
-            
-            
-            db.collection("chats").doc(router.query.id).delete().then(() => router.push('/'))
-        }
+        userIsTypingRef.delete()
+        recipientIsTypingRef.delete()
+        
+        
+        db.collection("chats").doc(router.query.id).delete().then(() => router.push('/'))
     }
 
     const sendMessage = async (e) => {
@@ -238,7 +244,7 @@ function ChatScreen({ chat, messages }) {
                         </IconButton>
                     </label>
                     
-                    <IconButton style={{color:'#b5b7c2'}} onClick={removeConversation}>
+                    <IconButton style={{color:'#b5b7c2'}} onClick={handleClickOpen}>
                         <DeleteForeverIcon style={{ fontSize: 25 }}/>
                     </IconButton>
                 </HeaderIcons>
@@ -263,6 +269,18 @@ function ChatScreen({ chat, messages }) {
                     </IconButton>
                 </SendIconButton>
             </InputContainer>
+
+
+
+            <Dialog open={open} onClose={AlertHandleClose}>
+            <DialogTitle>Do you want to remove this conversation?</DialogTitle>
+            <ButtonContainer>
+                <Button onClick={removeConversation} variant="outlined" size="large" style={{color: "#dc2f02", borderColor: "#dc2f02"}}>Agree</Button>
+                <Button size="large" onClick={AlertHandleClose} variant="outlined">
+                Disagree
+                </Button>
+            </ButtonContainer>
+            </Dialog>
         </Container>
     )
 }
@@ -270,6 +288,28 @@ function ChatScreen({ chat, messages }) {
 export default ChatScreen;
 
 const Container = styled.div`
+`;
+
+const DialogTitle = styled.h1`
+color: #8f8ce7;
+font-size: 2rem;
+margin: 1.5rem 2.5rem;
+
+@media (min-width: 45rem) {
+    font-size: 2.5rem;
+    margin: 2rem 3rem;
+}
+`;
+
+const ButtonContainer = styled.div`
+display: flex;
+justify-content: space-around;
+margin: 0 7rem 2rem 7rem;
+align-items: center;
+
+@media (min-width: 45rem) {
+  margin: 0 19rem 2rem 19rem;
+}
 `;
 
 const FileInfo = styled.p`

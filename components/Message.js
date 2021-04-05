@@ -171,7 +171,7 @@ const MessageElement = styled.p`
     word-wrap: break-word;
     white-space: pre-wrap;
     width: fit-content;
-    padding: .6rem 1.2rem;
+    padding: .7rem 1.2rem;
     border-radius: 1.4rem;
     margin: 1.7rem 1rem;
     max-width: 60vw;

@@ -28,7 +28,6 @@ function User({ user, setInput }) {
                         userName: userLoggedIn.displayName
                     }).then(() => {
                         setInput('')
-                        alert('Friend request sent!')
                     }).catch((error) => {
                         alert('error: ', error.message)
                     })  

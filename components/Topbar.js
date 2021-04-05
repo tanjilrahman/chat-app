@@ -9,7 +9,7 @@ import NotificationsActiveIcon from '@material-ui/icons/NotificationsActive';
 import { useEffect, useState } from 'react';
 import { useCollection } from 'react-firebase-hooks/firestore';
 
-function Topbar({ handleOpen }) {
+function Topbar({ handleOpen, handleClickOpen }) {
     const [user] = useAuthState(auth);
     const router = useRouter();
     const [hasRequests, setHasRequests] = useState(false)
@@ -50,7 +50,7 @@ function Topbar({ handleOpen }) {
                     </IconButton>
                 }
                 
-                <UserAvatar style={{ height: '4.5rem', width: '4.5rem' }} onClick={sighOut} src={user.photoURL}/>
+                <UserAvatar style={{ height: '4.5rem', width: '4.5rem' }} onClick={handleClickOpen} src={user.photoURL}/>
                 <p>{user.displayName}</p>
             </UserInfo>
         </Container>

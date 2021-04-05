@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { useCollection } from 'react-firebase-hooks/firestore';
 import styled from 'styled-components';
+import AlertDialog from '../../components/AlertDialog';
 import ChatScreen from '../../components/ChatScreen';
 import RequestDialog from '../../components/RequestDialog';
 import Sidebar from '../../components/Sidebar';
@@ -16,18 +17,28 @@ function Chat({ chat, messages }) {
 
     const recipient = recipientSnapshot?.docs?.[0]?.data()
 
+    //RequestDialog
     const [open, setOpen] = useState(false);
 
     const handleOpen = () => setOpen(true)
     const handleClose = () => setOpen(false)
 
+    //AlertDialog
+    const [AlertOpen, setAlertOpen] = useState(false);
+
+    const handleClickOpen = () => {
+        setAlertOpen(true);
+    };
+    const AlertHandleClose = () => {
+        setAlertOpen(false);
+    };
     return (
         <Container>
             <Head>
                 <title>Chat with {recipient?.userName ? recipient?.userName : getRecipientEmail(JSON.parse(chat).users, user)}</title>
             </Head>
             <ResponsiveTopbar>
-                <Topbar handleOpen={handleOpen} />
+                <Topbar handleOpen={handleOpen} handleClickOpen={handleClickOpen}/>
             </ResponsiveTopbar>
             
             <Body>
@@ -40,7 +51,7 @@ function Chat({ chat, messages }) {
                 </ChatContainer>
                 
             </Body>
-
+            <AlertDialog open={AlertOpen} handleClose={AlertHandleClose}/>
             <RequestDialog open={open} onClose={handleClose}/>
         </Container>
     )

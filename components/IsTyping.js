@@ -30,7 +30,7 @@ const Typing = styled.div`
     background-color: #8f8ce4;
     color: white;
     line-height: 1;
-    padding: 1.3rem 1.7rem;
+    padding: 1.2rem 1.2rem;
     border-radius: 1.5rem;
     margin: 1.7rem 1rem;
 

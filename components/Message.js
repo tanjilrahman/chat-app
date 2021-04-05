@@ -25,7 +25,7 @@ function Message({ user, message }) {
     return (
         <Container>
             {
-                user !== userLoggedIn.email ? <TypeOfAvater style={{ height: '3.5rem', width: '3.5rem' }} src={message.photoURL}/> : ''
+                user !== userLoggedIn.email ? <TypeOfAvater style={{ height: '3.2rem', width: '3.2rem' }} src={message.photoURL}/> : ''
             }
             {
                 message.imageDownloadURL || message.attachmentDownloadURL ? 
@@ -84,7 +84,7 @@ function Message({ user, message }) {
 
             
             {
-                user === userLoggedIn.email ? <TypeOfAvater style={{ height: '3.5rem', width: '3.5rem' }} src={message.photoURL}/> : ''
+                user === userLoggedIn.email ? <TypeOfAvater style={{ height: '3.2rem', width: '3.2rem' }} src={message.photoURL}/> : ''
             }
             
         </Container>
@@ -171,8 +171,8 @@ const MessageElement = styled.p`
     word-wrap: break-word;
     white-space: pre-wrap;
     width: fit-content;
-    padding: 1.3rem 1.7rem;
-    border-radius: 1.5rem;
+    padding: .6rem 1.2rem;
+    border-radius: 1.4rem;
     margin: 1.7rem 1rem;
     max-width: 60vw;
     position: relative;
@@ -228,9 +228,9 @@ const UserAvatar = styled(Avatar)`
 `;
 
 const SenderAvatar = styled(UserAvatar)`
-    bottom: 2rem;
+    bottom: 1.9rem;
 `;
 
 const ReceiverAvatar = styled(UserAvatar)`
-    bottom: 1.9rem;
+    bottom: 1.8rem;
 `;

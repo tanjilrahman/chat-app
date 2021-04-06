@@ -28,7 +28,7 @@ function Home() {
       <Head>
         <title>QuickTalk</title>
         <link rel="icon" href="/favicon.png" />
-        <script type="module" src="/client.js" />
+        
       </Head>
       <Topbar handleOpen={handleOpen} handleClickOpen={handleClickOpen}/>
       <Body>

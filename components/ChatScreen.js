@@ -17,7 +17,7 @@ import TextareaAutosize from 'react-textarea-autosize';
 import IsTyping from './IsTyping';
 import Link from 'next/link';
 import HighlightOffIcon from '@material-ui/icons/HighlightOff';
-import sendPush from '../public/client';
+
 
 function ChatScreen({ chat, messages }) {
     const [user] = useAuthState(auth);
@@ -150,10 +150,6 @@ function ChatScreen({ chat, messages }) {
         setInput('');
         setUpload(null);
         scrollToBottom();
-        // Check for service worker
-        if ("serviceWorker" in navigator) {
-          sendPush().catch(err => console.error(err));
-        }
     }
 
     const uploadFile = (e) => {

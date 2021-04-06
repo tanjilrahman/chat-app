@@ -18,8 +18,8 @@ function Login() {
             </Head>
             <PageHeader>
                 <PageSpan>Welcome to,</PageSpan>
-                <PageTitle>JusChat</PageTitle>
-                <PageTag>Chat with ease!</PageTag>
+                <PageTitle>QuickTalk</PageTitle>
+                <PageTag>Simple and fast!</PageTag>
             </PageHeader>
             <Button style={{color: "#8f8ce7", borderColor: "#8f8ce7", fontSize: 15}} variant="outlined" onClick={signIn} >Sign in with Google</Button>
         </Container>
@@ -40,9 +40,8 @@ const PageHeader = styled.div`
 
 const PageSpan = styled.p`
     color: #A5A9B6;
-    margin: 0 0 0 1.5rem;
+    margin: 0 0 0 .2rem;
     font-style: italic;
-    font-size: 1.2rem;
 `;
 
 const PageTitle = styled.h1`

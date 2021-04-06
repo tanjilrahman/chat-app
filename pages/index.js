@@ -26,7 +26,7 @@ function Home() {
   return (
     <div>
       <Head>
-        <title>Chat app</title>
+        <title>QuickTalk</title>
         <link rel="icon" href="/favicon.png" />
         
       </Head>

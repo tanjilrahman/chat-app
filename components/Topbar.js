@@ -36,7 +36,7 @@ function Topbar({ handleOpen, handleClickOpen }) {
         <Container>
             <Link href="/">
                 <LogoContainer>
-                    <h3>JusChat</h3>
+                    <h3>QuickTalk</h3>
                 </LogoContainer>
             </Link>
             

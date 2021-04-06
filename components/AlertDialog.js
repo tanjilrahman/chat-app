@@ -36,7 +36,7 @@ margin: 1.5rem 2.5rem;
 const ButtonContainer = styled.div`
 display: flex;
 justify-content: space-around;
-margin: 0 3.5rem 2rem 3.5rem;
+margin: 0 2.5rem 2rem 2.5rem;
 align-items: center;
 
 @media (min-width: 45rem) {

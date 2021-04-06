@@ -16,9 +16,12 @@ function Login() {
             <Head>
                 <title>Login</title>
             </Head>
-
-                <Button  variant="contained"
-        color="primary" style={{ fontSize: 15 }} onClick={signIn} >Sign in with Google</Button>
+            <PageHeader>
+                <PageSpan>Welcome to,</PageSpan>
+                <PageTitle>JusChat</PageTitle>
+                <PageTag>Chat with ease!</PageTag>
+            </PageHeader>
+            <Button style={{color: "#8f8ce7", borderColor: "#8f8ce7", fontSize: 15}} variant="outlined" onClick={signIn} >Sign in with Google</Button>
         </Container>
     )
 }
@@ -29,7 +32,32 @@ const Container = styled.div`
     display: grid;
     place-items: center;
     height: 100vh;
-    background-color: whitesmoke;
+`;
+
+const PageHeader = styled.div`
+
+`;
+
+const PageSpan = styled.p`
+    color: #A5A9B6;
+    margin: 0 0 0 1.5rem;
+    font-style: italic;
+    font-size: 1.2rem;
+`;
+
+const PageTitle = styled.h1`
+    color: #8f8ce7;
+    text-align: center;
+    font-size: 5rem;
+    margin: 0;
+    line-height: 1;
+`;
+
+const PageTag = styled.p`
+    text-align: center;
+    color: #A5A9B6;
+    margin: 0rem;
+    font-style: italic;
 `;
 
 const LoginContainer = styled.div`

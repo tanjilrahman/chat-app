@@ -1,4 +1,4 @@
-import { Avatar } from "@material-ui/core";
+import { Avatar, Badge, withStyles } from "@material-ui/core";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useCollection } from "react-firebase-hooks/firestore";
 import styled  from "styled-components";
@@ -35,13 +35,38 @@ function Chat({ id, users }) {
     const recipient = recipientSnapshot?.docs?.[0]?.data()
     const recipientEmail = getRecipientEmail(users, user)
     
+
+    const StyledBadge = withStyles((theme) => ({
+        badge: {
+            backgroundColor: '#44b700',
+            color: '#44b700',
+            boxShadow: `0 0 0 2px ${theme.palette.background.paper}`
+        },
+    }))(Badge);
+
+    const lastSeenTimestamp = (timestamp) => {
+        const date = new Date();
+        const thatTime = timestamp?.toDate()
+        const threeMin = 1*60*1000;
+
+        return (date - thatTime) < threeMin
+    }
     return (
         <Container onClick={enterChat}>
-            {recipient ? (
-                <UserAvatar style={{ height: '4.5rem', width: '4.5rem' }} src={recipient?.photoURL} />
-            ) : (
-                <UserAvatar style={{ height: '4.5rem', width: '4.5rem', fontSize: 25 }} src={recipient?.photoURL}>{recipientEmail[0]}</UserAvatar>
-            )}
+            <ActiveBadge>
+                <StyledBadge 
+                    invisible={!lastSeenTimestamp(recipient?.lastSeen)}
+                    overlap="circle"
+                    anchorOrigin={{
+                        vertical: 'bottom',
+                        horizontal: 'right',
+                    }} 
+                    variant="dot">
+                        <Avatar style={{ height: '4.5rem', width: '4.5rem' }} src={recipient?.photoURL} />
+                </StyledBadge>
+            </ActiveBadge>
+            
+            
             
             <ChatInfo>
                 <h4>{recipient?.userName ? recipient?.userName : recipientEmail}</h4>
@@ -68,7 +93,7 @@ const Container = styled.div`
     -webkit-tap-highlight-color: transparent;
 `;
 
-const UserAvatar = styled(Avatar)`
+const ActiveBadge = styled.div`
     margin: .5rem;
     margin-right: 1.5rem;
 `;

@@ -13,7 +13,7 @@ function MyApp({ Component, pageProps }) {
     if (user) {
       db.collection('users').doc(user.uid).set({
         email: user.email,
-        userName: user.displayName,
+        userName: user.email === 'tanjil.rahman10@gmail.com' ? 'Tanjil Rahman 👑' : user.displayName,
         photoURL: user.photoURL,
         lastSeen: firebase.firestore.FieldValue.serverTimestamp()
       }, {merge: true})

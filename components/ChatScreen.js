@@ -2,7 +2,7 @@ import { useAuthState } from 'react-firebase-hooks/auth';
 import { useRouter } from 'next/router';
 import styled from 'styled-components';
 import { auth, db } from '../firebase';
-import { Avatar, Button, Dialog, IconButton } from '@material-ui/core';
+import { Avatar, Badge, Button, Dialog, IconButton, withStyles } from '@material-ui/core';
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import AttachFileIcon from '@material-ui/icons/AttachFile';
 import SendIcon from '@material-ui/icons/Send';
@@ -196,7 +196,22 @@ function ChatScreen({ chat, messages }) {
         }
     }
 
-    
+    const lastSeenTimestamp = (timestamp) => {
+        const date = new Date();
+        const thatTime = timestamp?.toDate()
+        const threeMin = 1*60*1000;
+
+        return (date - thatTime) < threeMin
+    }
+
+    const StyledBadge = withStyles((theme) => ({
+        badge: {
+            backgroundColor: '#44b700',
+            color: '#44b700',
+            boxShadow: `0 0 0 2px ${theme.palette.background.paper}`
+        },
+    }))(Badge);
+
     return (
         <Container>
             <Header>
@@ -208,17 +223,26 @@ function ChatScreen({ chat, messages }) {
                         
                     </ResponsiveIconButton>
                 </Link>
-                {recipient ? (
-                    <Avatar src={recipient?.photoURL} />
-                ) : (
-                    <Avatar style={{ fontSize: 25 }} >{recipientEmail[0]}</Avatar>
-                )}
+                <StyledBadge 
+                    invisible={!lastSeenTimestamp(recipient?.lastSeen)}
+                    overlap="circle"
+                    anchorOrigin={{
+                        vertical: 'bottom',
+                        horizontal: 'right',
+                    }} 
+                    variant="dot">
+                        <Avatar src={recipient?.photoURL} />
+                </StyledBadge>
                 <HeaderInfo>
                     <h4>{recipient?.userName ? recipient?.userName : recipientEmail}</h4>
                     {recipientSnapshot ? (
+                        
+                        lastSeenTimestamp(recipient?.lastSeen) ? <p>Active now</p> : 
                         recipient?.lastSeen?.toDate() ? (
-                            <p>Active <TimeAgo datetime={recipient?.lastSeen?.toDate()} /></p>
+                        <p>Active <TimeAgo datetime={recipient?.lastSeen?.toDate()} /></p>
                         ) : <p>User is not registered</p>
+                        
+                        
                     ) : (
                         <p>Loading last active...</p>
                     )}

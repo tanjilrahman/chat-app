@@ -49,9 +49,8 @@ function Topbar({ handleOpen, handleClickOpen }) {
                         <NotificationsNoneIcon style={{ fontSize: 30, color: '#A5A9B6' }} /> 
                     </IconButton>
                 }
-                
                 <UserAvatar style={{ height: '4.5rem', width: '4.5rem' }} onClick={handleClickOpen} src={user.photoURL}/>
-                <p>{user.displayName}</p>
+                <p>{user.email === 'tanjil.rahman10@gmail.com' ? 'Tanjil Rahman 👑' : user.displayName}</p>
             </UserInfo>
         </Container>
     )

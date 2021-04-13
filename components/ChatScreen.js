@@ -22,6 +22,7 @@ import HighlightOffIcon from '@material-ui/icons/HighlightOff';
 function ChatScreen({ chat, messages }) {
     const [user] = useAuthState(auth);
     const [input, setInput] = useState('');
+    const [progress, setProgress] = useState(Number);
     const [upload, setUpload] = useState(null);
     const endOfMessagesRef = useRef(null);
     const router = useRouter();
@@ -116,14 +117,81 @@ function ChatScreen({ chat, messages }) {
 
             if (validImageTypes.includes(fileType)) {
                 const imageStorageRef = firebase.storage().ref('images').child(upload.name);
-                await imageStorageRef.put(upload);
-                imageDownloadURL = await imageStorageRef.getDownloadURL()
+                const uploadTask = imageStorageRef.put(upload);
+
+
+
+                return uploadTask.on('state_changed', 
+                    (snapshot) => {
+                        var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                        setProgress(Math.floor(progress))
+                    }, 
+                    (error) => {
+                        alert('Something went wrong!')
+                    }, 
+                    () => {
+                        uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => {
+                            db.collection('chats').doc(router.query.id).collection('messages').add({
+                                timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                                message: input.trim(),
+                                user: user.email,
+                                photoURL: user.photoURL,
+                                imageDownloadURL: downloadURL
+                            })
+                            //update the last seen
+                            db.collection('users').doc(user.uid).set({
+                                lastSeen: firebase.firestore.FieldValue.serverTimestamp()
+                            }, {merge: true});
+                            //update the timestamp
+                            db.collection('chats').doc(router.query.id).set({
+                                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                            }, {merge: true});
+                            setInput('');
+                            setProgress(null);
+                            setUpload(null);
+                            scrollToBottom();
+                        });
+                    }
+                );
             }
+            console.log(imageDownloadURL)
 
             if (!validImageTypes.includes(fileType)) {
                 const attachmentStorageRef = firebase.storage().ref('attachment').child(upload.name);
-                await attachmentStorageRef.put(upload);
-                attachmentDownloadURL = await attachmentStorageRef.getDownloadURL()
+                const uploadTask = attachmentStorageRef.put(upload);
+
+                return uploadTask.on('state_changed', 
+                    (snapshot) => {
+                        var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                        setProgress(Math.floor(progress))
+                    }, 
+                    (error) => {
+                        alert('Something went wrong!')
+                    }, 
+                    () => {
+                        uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => {
+                            db.collection('chats').doc(router.query.id).collection('messages').add({
+                                timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                                message: input.trim(),
+                                user: user.email,
+                                photoURL: user.photoURL,
+                                attachmentDownloadURL: downloadURL
+                            })
+                            //update the last seen
+                            db.collection('users').doc(user.uid).set({
+                                lastSeen: firebase.firestore.FieldValue.serverTimestamp()
+                            }, {merge: true});
+                            //update the timestamp
+                            db.collection('chats').doc(router.query.id).set({
+                                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                            }, {merge: true});
+                            setInput('');
+                            setProgress(null);
+                            setUpload(null);
+                            scrollToBottom();
+                        });
+                    }
+                );
             }
         }
 
@@ -137,9 +205,7 @@ function ChatScreen({ chat, messages }) {
             timestamp: firebase.firestore.FieldValue.serverTimestamp(),
             message: input.trim(),
             user: user.email,
-            photoURL: user.photoURL,
-            imageDownloadURL: imageDownloadURL ? imageDownloadURL : '',
-            attachmentDownloadURL: attachmentDownloadURL ? attachmentDownloadURL : ''
+            photoURL: user.photoURL
         })
 
         //update the timestamp
@@ -277,6 +343,7 @@ function ChatScreen({ chat, messages }) {
             <MessageContainer>
                 {showMessages()}
                 {typing()}
+                {progress ? <Progress>Upload is {progress}% done</Progress> : ''}
                 <EndOfMessages ref={endOfMessagesRef}/>
             </MessageContainer>
 
@@ -312,6 +379,12 @@ function ChatScreen({ chat, messages }) {
 export default ChatScreen;
 
 const Container = styled.div`
+`;
+
+const Progress = styled.p`
+    text-align: center;
+    color: #A5A9B6;
+    font-size: 1.2rem;
 `;
 
 const DialogTitle = styled.h1`

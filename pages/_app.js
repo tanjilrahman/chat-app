@@ -16,9 +16,11 @@ const MyApp = ({ Component, pageProps }) => {
     return setIsOnline(true);
   };
   useEffect(() => {
+    window.addEventListener("beforeunload", handleTabBlur);
     window.addEventListener("blur", handleTabBlur);
     window.addEventListener("focus", handleTabFocus);
     return () => {
+      window.addEventListener("beforeunload", handleTabBlur);
       window.addEventListener("blur", handleTabBlur);
       window.addEventListener("focus", handleTabFocus);
     };

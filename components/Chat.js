@@ -46,13 +46,6 @@ function Chat({ id, users }) {
     },
   }))(Badge);
 
-  const lastSeenTimestamp = (timestamp) => {
-    const date = new Date();
-    const thatTime = timestamp?.toDate();
-    const threeMin = 1 * 60 * 1000;
-
-    return date - thatTime < threeMin;
-  };
   return (
     <div onClick={enterChat}>
       {loading ? (
@@ -67,7 +60,7 @@ function Chat({ id, users }) {
         <Container>
           <ActiveBadge>
             <StyledBadge
-              invisible={!lastSeenTimestamp(recipient?.lastSeen)}
+              invisible={!recipient?.isOnline}
               overlap="circle"
               anchorOrigin={{
                 vertical: "bottom",

@@ -1,119 +1,132 @@
 import { Avatar, IconButton } from "@material-ui/core";
-import PersonAddIcon from '@material-ui/icons/PersonAdd';
+import PersonAddIcon from "@material-ui/icons/PersonAdd";
+import axios from "axios";
 import { useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useCollection } from "react-firebase-hooks/firestore";
-import styled  from "styled-components";
+import styled from "styled-components";
 import { auth, db } from "../firebase";
 
 function User({ user, setInput }) {
-    const [userLoggedIn] = useAuthState(auth);
-    const [exists, setExists] = useState(false)
+  const [userLoggedIn] = useAuthState(auth);
+  const [exists, setExists] = useState(false);
 
-    const requestsRef = db.collection('users').doc(user.uid).collection('friendRequests').doc(userLoggedIn.uid)
-    const [requestsSnapshot] = useCollection(requestsRef)
+  const requestsRef = db
+    .collection("users")
+    .doc(user.uid)
+    .collection("friendRequests")
+    .doc(userLoggedIn.uid);
+  const [requestsSnapshot] = useCollection(requestsRef);
 
-    const userChatRef = db.collection('chats').where('users', 'array-contains', userLoggedIn.email);
-    const [chatsSnapshot] = useCollection(userChatRef)
+  const userChatRef = db
+    .collection("chats")
+    .where("users", "array-contains", userLoggedIn.email);
+  const [chatsSnapshot] = useCollection(userChatRef);
 
-    const userLoggedInRequestsRef = db.collection('users').doc(userLoggedIn.uid).collection('friendRequests').doc(user.uid)
+  const userLoggedInRequestsRef = db
+    .collection("users")
+    .doc(userLoggedIn.uid)
+    .collection("friendRequests")
+    .doc(user.uid);
 
-    const sendRequest = () => {
-        userLoggedInRequestsRef.get().then((requestSnapshot) => {
-            if (!requestSnapshot.exists) {
-                if (!chatAlreadyExists(user?.user.email)) {
-                    requestsRef.set({
-                        email: userLoggedIn.email,
-                        photoURL: userLoggedIn.photoURL,
-                        userName: userLoggedIn.displayName
-                    }).then(() => {
-                        setInput('')
-                    }).catch((error) => {
-                        alert('error: ', error.message)
-                    })  
-                } else {
-                    alert('You guys are friends!')
-                }
-                
-            } else {
-                alert('You already have a friend request from this person. Please check your notification.')
-            }
-        })
-        
-    }
+  const sendRequest = () => {
+    userLoggedInRequestsRef.get().then((requestSnapshot) => {
+      if (!requestSnapshot.exists) {
+        if (!chatAlreadyExists(user?.user.email)) {
+          requestsRef
+            .set({
+              email: userLoggedIn.email,
+              photoURL: userLoggedIn.photoURL,
+              userName: userLoggedIn.displayName,
+            })
+            .then(async () => {
+              await axios.post("/api/request", {
+                name: user?.user.userName,
+                recipientName: userLoggedIn.displayName,
+                email: user?.user.email,
+              });
+              setInput("");
+            })
+            .catch((error) => {
+              console.log("error: ", error.message);
+            });
+        } else {
+          alert("You guys are friends!");
+        }
+      } else {
+        alert(
+          "You already have a friend request from this person. Please check your notification."
+        );
+      }
+    });
+  };
 
-    const chatAlreadyExists = (recipientEmail) => 
-        !!chatsSnapshot?.docs.find((chat) => chat.data().users.find((user) => user === recipientEmail)?.length > 0
+  const chatAlreadyExists = (recipientEmail) =>
+    !!chatsSnapshot?.docs.find(
+      (chat) =>
+        chat.data().users.find((user) => user === recipientEmail)?.length > 0
     );
 
-    useEffect(() => {
-        if (requestsSnapshot?.exists) {
-            setExists(true)
-        } else {
-            setExists(false)
-        }
-    }, [requestsSnapshot])
+  useEffect(() => {
+    if (requestsSnapshot?.exists) {
+      setExists(true);
+    } else {
+      setExists(false);
+    }
+  }, [requestsSnapshot]);
 
-    
-
-    return (
-        <Container>
-            <UserContainer>
-                <UserAvatar style={{ height: '4.5rem', width: '4.5rem' }} src={user?.user.photoURL} />
-                 <UserInfo>{user?.user.userName}</UserInfo>
-            </UserContainer>
-            {
-                exists ? <Sent>Request sent!</Sent> : 
-                <IconButton onClick={sendRequest} style={{ color:'#b5b7c2' }}>
-                    <PersonAddIcon style={{ fontSize: 30 }} />
-                </IconButton>
-            }
-            
-        </Container>
-    )
+  return (
+    <Container>
+      <UserContainer>
+        <UserAvatar
+          style={{ height: "4.5rem", width: "4.5rem" }}
+          src={user?.user.photoURL}
+        />
+        <UserInfo>{user?.user.userName}</UserInfo>
+      </UserContainer>
+      {exists ? (
+        <Sent>Request sent!</Sent>
+      ) : (
+        <IconButton onClick={sendRequest} style={{ color: "#b5b7c2" }}>
+          <PersonAddIcon style={{ fontSize: 30 }} />
+        </IconButton>
+      )}
+    </Container>
+  );
 }
 
 export default User;
 
-
 const Container = styled.div`
-    display: flex;
-    align-items: center;
-    padding: 1.5rem 2rem;
-    word-wrap: break-word;
-    line-height: 1;
+  display: flex;
+  align-items: center;
+  padding: 1.5rem 2rem;
+  word-wrap: break-word;
+  line-height: 1;
 `;
 
 const Sent = styled.p`
-    color: #8f8ce7;
-    font-style: italic;
-    font-size: 1.2rem;
+  color: #8f8ce7;
+  font-style: italic;
+  font-size: 1.2rem;
 `;
 
 const UserContainer = styled.div`
-    display: flex;
-    align-items: center;
-    flex: 1;
+  display: flex;
+  align-items: center;
+  flex: 1;
 `;
 
 const UserAvatar = styled(Avatar)`
-    margin: .5rem;
-    margin-right: 1.5rem;
+  margin: 0.5rem;
+  margin-right: 1.5rem;
 `;
 
 const UserInfo = styled.h4`
-
-    color: #A5A9B6;
-    max-width: 220px;
-    font-size: 1.8rem;
- 
+  color: #a5a9b6;
+  max-width: 220px;
+  font-size: 1.8rem;
 `;
-
-
-
-
-
-
 
 // const createChat = (e) => {
 //     e.preventDefault();
@@ -131,15 +144,9 @@ const UserInfo = styled.h4`
 //     }
 // }
 
-// const chatAlreadyExists = (recipientEmail) => 
+// const chatAlreadyExists = (recipientEmail) =>
 //     !!chatsSnapshot?.docs.find((chat) => chat.data().users.find((user) => user === recipientEmail)?.length > 0
 // );
-
-
-
-
-
-
 
 // const createChat = () => {
 //     if (!chatAlreadyExists(user.email) && user.email !== userLoggedIn.email) {
@@ -152,6 +159,6 @@ const UserInfo = styled.h4`
 //     }
 // }
 
-// const chatAlreadyExists = (recipientEmail) => 
+// const chatAlreadyExists = (recipientEmail) =>
 //     !!chatsSnapshot?.docs.find((chat) => chat.data().users.find((user) => user === recipientEmail)?.length > 0
 // );

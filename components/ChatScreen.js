@@ -2,6 +2,7 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import { useRouter } from "next/router";
 import styled from "styled-components";
 import { auth, db } from "../firebase";
+import axios from "axios";
 import {
   Avatar,
   Badge,
@@ -114,6 +115,9 @@ function ChatScreen({ chat, messages }) {
       .then(() => router.push("/"));
   };
 
+  const recipient = recipientSnapshot?.docs?.[0]?.data();
+  const recipientEmail = getRecipientEmail(JSON.parse(chat).users, user);
+
   const sendMessage = async (e) => {
     e.preventDefault();
 
@@ -153,36 +157,48 @@ function ChatScreen({ chat, messages }) {
             alert("Something went wrong!");
           },
           () => {
-            uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => {
-              db.collection("chats")
-                .doc(router.query.id)
-                .collection("messages")
-                .add({
-                  timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-                  message: input.trim(),
-                  user: user.email,
-                  photoURL: user.photoURL,
-                  imageDownloadURL: downloadURL,
-                });
-              //update the last seen
-              db.collection("users").doc(user.uid).set(
-                {
-                  lastSeen: firebase.firestore.FieldValue.serverTimestamp(),
-                },
-                { merge: true }
-              );
-              //update the timestamp
-              db.collection("chats").doc(router.query.id).set(
-                {
-                  timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-                },
-                { merge: true }
-              );
-              setInput("");
-              setProgress(null);
-              setUpload(null);
-              scrollToBottom();
-            });
+            uploadTask.snapshot.ref
+              .getDownloadURL()
+              .then(async (downloadURL) => {
+                db.collection("chats")
+                  .doc(router.query.id)
+                  .collection("messages")
+                  .add({
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                    message: input.trim(),
+                    user: user.email,
+                    photoURL: user.photoURL,
+                    imageDownloadURL: downloadURL,
+                  });
+                //update the last seen
+                db.collection("users").doc(user.uid).set(
+                  {
+                    lastSeen: firebase.firestore.FieldValue.serverTimestamp(),
+                  },
+                  { merge: true }
+                );
+                //update the timestamp
+                db.collection("chats").doc(router.query.id).set(
+                  {
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                  },
+                  { merge: true }
+                );
+                if (!recipient?.isOnline) {
+                  await axios.post("/api/message", {
+                    name: recipient?.userName,
+                    recipientName: user.displayName,
+                    email: recipientEmail,
+                    message: "*image*",
+                    chatLink: router.basePath + router.asPath,
+                  });
+                }
+
+                setInput("");
+                setProgress(null);
+                setUpload(null);
+                scrollToBottom();
+              });
           }
         );
       }
@@ -206,36 +222,49 @@ function ChatScreen({ chat, messages }) {
             alert("Something went wrong!");
           },
           () => {
-            uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => {
-              db.collection("chats")
-                .doc(router.query.id)
-                .collection("messages")
-                .add({
-                  timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-                  message: input.trim(),
-                  user: user.email,
-                  photoURL: user.photoURL,
-                  attachmentDownloadURL: downloadURL,
-                });
-              //update the last seen
-              db.collection("users").doc(user.uid).set(
-                {
-                  lastSeen: firebase.firestore.FieldValue.serverTimestamp(),
-                },
-                { merge: true }
-              );
-              //update the timestamp
-              db.collection("chats").doc(router.query.id).set(
-                {
-                  timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-                },
-                { merge: true }
-              );
-              setInput("");
-              setProgress(null);
-              setUpload(null);
-              scrollToBottom();
-            });
+            uploadTask.snapshot.ref
+              .getDownloadURL()
+              .then(async (downloadURL) => {
+                db.collection("chats")
+                  .doc(router.query.id)
+                  .collection("messages")
+                  .add({
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                    message: input.trim(),
+                    user: user.email,
+                    photoURL: user.photoURL,
+                    attachmentDownloadURL: downloadURL,
+                  });
+                //update the last seen
+                db.collection("users").doc(user.uid).set(
+                  {
+                    lastSeen: firebase.firestore.FieldValue.serverTimestamp(),
+                  },
+                  { merge: true }
+                );
+                //update the timestamp
+                db.collection("chats").doc(router.query.id).set(
+                  {
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                  },
+                  { merge: true }
+                );
+
+                if (!recipient?.isOnline) {
+                  await axios.post("/api/message", {
+                    name: recipient?.userName,
+                    recipientName: user.displayName,
+                    email: recipientEmail,
+                    message: "*Attachment*",
+                    chatLink: router.basePath + router.asPath,
+                  });
+                }
+
+                setInput("");
+                setProgress(null);
+                setUpload(null);
+                scrollToBottom();
+              });
           }
         );
       }
@@ -265,6 +294,17 @@ function ChatScreen({ chat, messages }) {
       { merge: true }
     );
 
+    //email sent
+    if (!recipient?.isOnline) {
+      await axios.post("/api/message", {
+        name: recipient?.userName,
+        recipientName: user.displayName,
+        email: recipientEmail,
+        message: input.trim(),
+        chatLink: router.basePath + router.asPath,
+      });
+    }
+
     setInput("");
     setUpload(null);
     scrollToBottom();
@@ -286,9 +326,6 @@ function ChatScreen({ chat, messages }) {
       .doc(user.email)
       .set({ input });
   }, [input]);
-
-  const recipient = recipientSnapshot?.docs?.[0]?.data();
-  const recipientEmail = getRecipientEmail(JSON.parse(chat).users, user);
 
   const [isTyping, setIsTyping] = useState("");
   const [isTypingSnapshot] = useCollection(
@@ -316,14 +353,6 @@ function ChatScreen({ chat, messages }) {
     }
   };
 
-  const lastSeenTimestamp = (timestamp) => {
-    const date = new Date();
-    const thatTime = timestamp?.toDate();
-    const threeMin = 1 * 60 * 1000;
-
-    return date - thatTime < threeMin;
-  };
-
   const StyledBadge = withStyles((theme) => ({
     badge: {
       backgroundColor: "#44b700",
@@ -343,7 +372,7 @@ function ChatScreen({ chat, messages }) {
           </ResponsiveIconButton>
         </Link>
         <StyledBadge
-          invisible={!lastSeenTimestamp(recipient?.lastSeen)}
+          invisible={!recipient?.isOnline}
           overlap="circle"
           anchorOrigin={{
             vertical: "bottom",
@@ -356,7 +385,7 @@ function ChatScreen({ chat, messages }) {
         <HeaderInfo>
           <h4>{recipient?.userName ? recipient?.userName : recipientEmail}</h4>
           {recipientSnapshot ? (
-            lastSeenTimestamp(recipient?.lastSeen) ? (
+            recipient?.isOnline ? (
               <p>Active now</p>
             ) : recipient?.lastSeen?.toDate() ? (
               <p>

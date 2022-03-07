@@ -5,8 +5,10 @@ import "../styles/globals.css";
 import Index from "./login";
 import PageLoad from "../components/PageLoad";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
 
 const MyApp = ({ Component, pageProps }) => {
+  const router = useRouter();
   const [user, loading] = useAuthState(auth);
   const [isOnline, setIsOnline] = useState(true);
   const handleTabBlur = () => {
@@ -42,6 +44,7 @@ const MyApp = ({ Component, pageProps }) => {
           },
           { merge: true }
         );
+      router.push("/");
     }
   }, [user, isOnline]);
 

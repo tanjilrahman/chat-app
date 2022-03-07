@@ -8,8 +8,11 @@ function Login() {
   const router = useRouter();
 
   const signIn = () => {
+    if (navigator.userAgent.includes("FB")) {
+      return alert("Please open the app in your browser.");
+    }
     auth
-      .signInWithPopup(provider)
+      .signInWithRedirect(provider)
       .then(() => router.push("/"))
       .catch(auth);
   };

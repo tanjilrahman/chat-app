@@ -9,7 +9,7 @@ function Login() {
 
   const signIn = () => {
     auth
-      .signInWithRedirect(provider)
+      .signInWithPopup(provider)
       .then(() => router.push("/"))
       .catch(auth);
   };

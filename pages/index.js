@@ -6,7 +6,7 @@ import Topbar from "../components/Topbar";
 import RequestDialog from "../components/RequestDialog";
 import { useEffect, useState } from "react";
 import AlertDialog from "../components/AlertDialog";
-import { db } from "../firebase";
+import { db, auth } from "../firebase";
 import { useAuthState } from "react-firebase-hooks/auth";
 import firebase from "firebase";
 

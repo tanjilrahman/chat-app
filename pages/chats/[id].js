@@ -1,5 +1,5 @@
 import Head from "next/head";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useCollection } from "react-firebase-hooks/firestore";
 import styled from "styled-components";
@@ -10,6 +10,7 @@ import Sidebar from "../../components/Sidebar";
 import Topbar from "../../components/Topbar";
 import { auth, db } from "../../firebase";
 import getRecipientEmail from "../../utils/getRecipientEmail";
+import firebase from "firebase";
 
 function Chat({ chat, messages }) {
   const [user] = useAuthState(auth);
@@ -20,6 +21,16 @@ function Chat({ chat, messages }) {
   );
 
   const recipient = recipientSnapshot?.docs?.[0]?.data();
+
+  useEffect(() => {
+    db.collection("users").doc(user.uid).set(
+      {
+        lastSeen: firebase.firestore.FieldValue.serverTimestamp(),
+        isOnline: true,
+      },
+      { merge: true }
+    );
+  }, []);
 
   //RequestDialog
   const [open, setOpen] = useState(false);

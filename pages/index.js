@@ -4,10 +4,15 @@ import Inbox from "../components/Inbox";
 import Sidebar from "../components/Sidebar";
 import Topbar from "../components/Topbar";
 import RequestDialog from "../components/RequestDialog";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import AlertDialog from "../components/AlertDialog";
+import { db } from "../firebase";
+import { useAuthState } from "react-firebase-hooks/auth";
+import firebase from "firebase";
 
 function Home() {
+  const [user] = useAuthState(auth);
+
   //RequestDialog
   const [open, setOpen] = useState(false);
 
@@ -23,6 +28,16 @@ function Home() {
   const AlertHandleClose = () => {
     setAlertOpen(false);
   };
+
+  useEffect(() => {
+    db.collection("users").doc(user.uid).set(
+      {
+        lastSeen: firebase.firestore.FieldValue.serverTimestamp(),
+        isOnline: true,
+      },
+      { merge: true }
+    );
+  }, []);
   return (
     <div>
       <Head>

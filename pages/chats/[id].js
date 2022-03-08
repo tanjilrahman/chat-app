@@ -39,6 +39,11 @@ function Chat({ chat, messages }) {
   return (
     <Container>
       <Head>
+        <meta
+          name="viewport"
+          content="initial-scale=1.0, maximum-scale=1.0"
+        ></meta>
+
         <title>
           Chat with{" "}
           {recipient?.userName

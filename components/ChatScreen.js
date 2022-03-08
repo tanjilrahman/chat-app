@@ -63,6 +63,7 @@ function ChatScreen({ chat, messages }) {
   };
 
   const showMessages = () => {
+    scrollToBottom();
     if (messagesSnapshot) {
       return messagesSnapshot.docs.map((message) => {
         scrollToBottom();
@@ -270,14 +271,7 @@ function ChatScreen({ chat, messages }) {
       }
     }
 
-    //update the last seen
-    db.collection("users").doc(user.uid).set(
-      {
-        lastSeen: firebase.firestore.FieldValue.serverTimestamp(),
-      },
-      { merge: true }
-    );
-
+    setUpload(null);
     //add the message
     db.collection("chats").doc(router.query.id).collection("messages").add({
       timestamp: firebase.firestore.FieldValue.serverTimestamp(),
@@ -285,6 +279,18 @@ function ChatScreen({ chat, messages }) {
       user: user.email,
       photoURL: user.photoURL,
     });
+
+    setInput("");
+
+    scrollToBottom();
+    //update the last seen
+    db.collection("users").doc(user.uid).set(
+      {
+        lastSeen: firebase.firestore.FieldValue.serverTimestamp(),
+        isOnline: true,
+      },
+      { merge: true }
+    );
 
     //update the timestamp
     db.collection("chats").doc(router.query.id).set(
@@ -304,10 +310,6 @@ function ChatScreen({ chat, messages }) {
         chatLink: router.basePath + router.asPath,
       });
     }
-
-    setInput("");
-    setUpload(null);
-    scrollToBottom();
   };
 
   const uploadFile = (e) => {

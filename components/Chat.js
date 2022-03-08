@@ -5,8 +5,9 @@ import styled from "styled-components";
 import { useRouter } from "next/router";
 import { auth, db } from "../firebase";
 import getRecipientEmail from "../utils/getRecipientEmail";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Circle } from "better-react-spinkit";
+import moment from "moment";
 
 function Chat({ id, users }) {
   const router = useRouter();
@@ -46,6 +47,26 @@ function Chat({ id, users }) {
     },
   }))(Badge);
 
+  useEffect(() => {
+    const now = moment().unix();
+    const seen = moment(recipient?.lastSeen?.toDate()).unix();
+    const diff = now - seen;
+    if (diff > 60) {
+      db.collection("users").doc(recipientSnapshot?.docs?.[0]?.id).set(
+        {
+          isOnline: false,
+        },
+        { merge: true }
+      );
+    } else if (diff < -1) {
+      db.collection("users").doc(recipientSnapshot?.docs?.[0]?.id).set(
+        {
+          isOnline: true,
+        },
+        { merge: true }
+      );
+    }
+  }, [recipient]);
   return (
     <div onClick={enterChat}>
       {loading ? (

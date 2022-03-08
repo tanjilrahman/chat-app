@@ -21,10 +21,16 @@ const MyApp = ({ Component, pageProps }) => {
     window.addEventListener("beforeunload", handleTabBlur);
     window.addEventListener("blur", handleTabBlur);
     window.addEventListener("focus", handleTabFocus);
+    document.addEventListener("beforeunload", handleTabBlur);
+    document.addEventListener("blur", handleTabBlur);
+    document.addEventListener("focus", handleTabFocus);
     return () => {
       window.addEventListener("beforeunload", handleTabBlur);
       window.addEventListener("blur", handleTabBlur);
       window.addEventListener("focus", handleTabFocus);
+      document.addEventListener("beforeunload", handleTabBlur);
+      document.addEventListener("blur", handleTabBlur);
+      document.addEventListener("focus", handleTabFocus);
     };
   });
   useEffect(() => {

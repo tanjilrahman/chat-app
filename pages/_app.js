@@ -17,7 +17,16 @@ const MyApp = ({ Component, pageProps }) => {
   const handleTabFocus = () => {
     return setIsOnline(true);
   };
+
+  // db.collection("users").onSnapshot((snapshot) => {
+  //   snapshot.docs.map((user) => {
+  //     if (!user.data().displayName) {
+  //       db.collection("users").doc(user.id).delete();
+  //     }
+  //   });
+  // });
   useEffect(() => {
+    window.onbeforeunload = () => handleTabBlur();
     window.addEventListener("beforeunload", handleTabBlur);
     window.addEventListener("blur", handleTabBlur);
     window.addEventListener("focus", handleTabFocus);
@@ -25,12 +34,12 @@ const MyApp = ({ Component, pageProps }) => {
     document.addEventListener("blur", handleTabBlur);
     document.addEventListener("focus", handleTabFocus);
     return () => {
-      window.addEventListener("beforeunload", handleTabBlur);
-      window.addEventListener("blur", handleTabBlur);
-      window.addEventListener("focus", handleTabFocus);
-      document.addEventListener("beforeunload", handleTabBlur);
-      document.addEventListener("blur", handleTabBlur);
-      document.addEventListener("focus", handleTabFocus);
+      window.removeEventListener("beforeunload", handleTabBlur);
+      window.removeEventListener("blur", handleTabBlur);
+      window.removeEventListener("focus", handleTabFocus);
+      document.removeEventListener("beforeunload", handleTabBlur);
+      document.removeEventListener("blur", handleTabBlur);
+      document.removeEventListener("focus", handleTabFocus);
     };
   });
   useEffect(() => {

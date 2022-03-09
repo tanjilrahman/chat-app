@@ -8,6 +8,7 @@ import getRecipientEmail from "../utils/getRecipientEmail";
 import { useEffect, useState } from "react";
 import { Circle } from "better-react-spinkit";
 import moment from "moment";
+import firebase from "firebase";
 
 function Chat({ id, users }) {
   const router = useRouter();
@@ -28,6 +29,13 @@ function Chat({ id, users }) {
   );
 
   const enterChat = () => {
+    db.collection("users").doc(user.uid).set(
+      {
+        lastSeen: firebase.firestore.FieldValue.serverTimestamp(),
+        isOnline: true,
+      },
+      { merge: true }
+    );
     if (router.pathname !== "/chats/[id]") {
       setLoading(true);
     }
@@ -47,26 +55,27 @@ function Chat({ id, users }) {
     },
   }))(Badge);
 
-  useEffect(() => {
-    const now = moment().unix();
-    const seen = moment(recipient?.lastSeen?.toDate()).unix();
-    const diff = now - seen;
-    if (diff > 60) {
-      db.collection("users").doc(recipientSnapshot?.docs?.[0]?.id).set(
-        {
-          isOnline: false,
-        },
-        { merge: true }
-      );
-    } else if (diff < -1) {
-      db.collection("users").doc(recipientSnapshot?.docs?.[0]?.id).set(
-        {
-          isOnline: true,
-        },
-        { merge: true }
-      );
-    }
-  }, [recipient]);
+  // useEffect(() => {
+  //   const now = moment().unix();
+  //   const seen = moment(recipient?.lastSeen?.toDate())?.unix();
+  //   const diff = now - seen;
+  //   if (diff > 30) {
+  //     db.collection("users").doc(recipientSnapshot?.docs?.[0]?.id).set(
+  //       {
+  //         isOnline: false,
+  //       },
+  //       { merge: true }
+  //     );
+  //   } else if (diff < 0) {
+  //     db.collection("users").doc(recipientSnapshot?.docs?.[0]?.id).set(
+  //       {
+  //         isOnline: true,
+  //       },
+  //       { merge: true }
+  //     );
+  //   }
+  // }, [recipientSnapshot, recipient]);
+
   return (
     <div onClick={enterChat}>
       {loading ? (

@@ -55,11 +55,32 @@ function Chat({ id, users }) {
     },
   }))(Badge);
 
+  useEffect(() => {
+    const now = moment().unix();
+    const seen = moment(recipient?.lastSeen?.toDate())?.unix();
+    const diff = now - seen;
+    if (diff > 20) {
+      db.collection("users").doc(recipientSnapshot?.docs?.[0]?.id).set(
+        {
+          isOnline: false,
+        },
+        { merge: true }
+      );
+    } else if (diff < 0) {
+      db.collection("users").doc(recipientSnapshot?.docs?.[0]?.id).set(
+        {
+          isOnline: true,
+        },
+        { merge: true }
+      );
+    }
+  }, [user, recipientSnapshot, recipient]);
+
   // useEffect(() => {
   //   const now = moment().unix();
   //   const seen = moment(recipient?.lastSeen?.toDate())?.unix();
   //   const diff = now - seen;
-  //   if (diff > 30) {
+  //   if (diff > 20) {
   //     db.collection("users").doc(recipientSnapshot?.docs?.[0]?.id).set(
   //       {
   //         isOnline: false,
@@ -74,7 +95,7 @@ function Chat({ id, users }) {
   //       { merge: true }
   //     );
   //   }
-  // }, [recipientSnapshot, recipient]);
+  // }, [recipientSnapshot, recipient, user]);
 
   return (
     <div onClick={enterChat}>

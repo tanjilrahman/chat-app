@@ -18,15 +18,7 @@ const MyApp = ({ Component, pageProps }) => {
     return setIsOnline(true);
   };
 
-  // db.collection("users").onSnapshot((snapshot) => {
-  //   snapshot.docs.map((user) => {
-  //     if (!user.data().displayName) {
-  //       db.collection("users").doc(user.id).delete();
-  //     }
-  //   });
-  // });
   useEffect(() => {
-    window.onbeforeunload = () => handleTabBlur();
     window.addEventListener("beforeunload", handleTabBlur);
     window.addEventListener("blur", handleTabBlur);
     window.addEventListener("focus", handleTabFocus);

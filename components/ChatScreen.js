@@ -280,8 +280,6 @@ function ChatScreen({ chat, messages }) {
       photoURL: user.photoURL,
     });
 
-    setInput("");
-
     scrollToBottom();
     //update the last seen
     db.collection("users").doc(user.uid).set(
@@ -310,6 +308,7 @@ function ChatScreen({ chat, messages }) {
         chatLink: router.basePath + router.asPath,
       });
     }
+    setInput("");
   };
 
   const uploadFile = (e) => {

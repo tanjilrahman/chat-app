@@ -14,10 +14,15 @@ function Chat({ id, users }) {
   const router = useRouter();
   const [user] = useAuthState(auth);
   const [loading, setLoading] = useState(false);
+  const [seen, setSeen] = useState(true);
 
   const [recipientSnapshot] = useCollection(
     db.collection("users").where("email", "==", getRecipientEmail(users, user))
   );
+  const [lastVisitedSnapshot] = useCollection(
+    db.collection("chats").doc(id).collection("lastVisited").doc(user.uid)
+  );
+  const [timestampSnapshot] = useCollection(db.collection("chats").doc(id));
 
   const [messagesSnapshot] = useCollection(
     db
@@ -76,6 +81,20 @@ function Chat({ id, users }) {
     }
   }, [user, recipientSnapshot, recipient]);
 
+  useEffect(() => {
+    const lastVisited = moment(
+      lastVisitedSnapshot?.data()?.lastVisited?.toDate()
+    ).unix();
+    const timestamp = moment(
+      timestampSnapshot?.data()?.timestamp?.toDate()
+    ).unix();
+    if (user?.email !== showLastMessage?.user && lastVisited < timestamp) {
+      setSeen(false);
+    } else {
+      setSeen(true);
+    }
+  }, [lastVisitedSnapshot, timestampSnapshot, messagesSnapshot]);
+
   // useEffect(() => {
   //   const now = moment().unix();
   //   const seen = moment(recipient?.lastSeen?.toDate())?.unix();
@@ -126,7 +145,7 @@ function Chat({ id, users }) {
             </StyledBadge>
           </ActiveBadge>
 
-          <ChatInfo>
+          <ChatInfo active={!seen}>
             <h4>
               {recipient?.userName ? recipient?.userName : recipientEmail}
             </h4>
@@ -139,6 +158,7 @@ function Chat({ id, users }) {
               ""
             )}
           </ChatInfo>
+          {!seen && <UnSeen />}
         </Container>
       )}
     </div>
@@ -146,6 +166,15 @@ function Chat({ id, users }) {
 }
 
 export default Chat;
+
+const UnSeen = styled.div`
+  background-color: #e3ac34;
+  height: 2rem;
+  width: 2rem;
+  border-radius: 50%;
+  margin-left: auto;
+  margin-right: 1rem;
+`;
 
 const Container = styled.div`
   display: flex;
@@ -170,7 +199,7 @@ const ChatInfo = styled.div`
   flex-direction: column;
 
   > h4 {
-    color: #8f8ce7;
+    ${({ active }) => (active ? "color: #e3ac34;" : "color: #8f8ce7;")}
     margin: 0 0 3px 0;
     max-width: 220px;
     font-size: 1.8rem;

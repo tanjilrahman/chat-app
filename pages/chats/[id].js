@@ -11,8 +11,10 @@ import Topbar from "../../components/Topbar";
 import { auth, db } from "../../firebase";
 import getRecipientEmail from "../../utils/getRecipientEmail";
 import firebase from "firebase";
+import { useRouter } from "next/router";
 
 function Chat({ chat, messages }) {
+  const router = useRouter();
   const [user] = useAuthState(auth);
   const [recipientSnapshot] = useCollection(
     db
@@ -30,6 +32,13 @@ function Chat({ chat, messages }) {
       },
       { merge: true }
     );
+    db.collection("chats")
+      .doc(router.query.id)
+      .collection("lastVisited")
+      .doc(user.uid)
+      .set({
+        lastVisited: firebase.firestore.FieldValue.serverTimestamp(),
+      });
   }, [user]);
 
   //RequestDialog

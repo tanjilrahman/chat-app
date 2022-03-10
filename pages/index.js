@@ -37,7 +37,7 @@ function Home() {
       },
       { merge: true }
     );
-  }, []);
+  }, [user]);
   return (
     <div>
       <Head>

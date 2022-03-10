@@ -23,7 +23,6 @@ import getRecipientEmail from "../utils/getRecipientEmail";
 import TimeAgo from "timeago-react";
 import TextareaAutosize from "react-textarea-autosize";
 import IsTyping from "./IsTyping";
-import Link from "next/link";
 import HighlightOffIcon from "@material-ui/icons/HighlightOff";
 
 function ChatScreen({ chat, messages }) {
@@ -362,16 +361,27 @@ function ChatScreen({ chat, messages }) {
     },
   }))(Badge);
 
+  const sendBack = () => {
+    db.collection("users").doc(user.uid).set(
+      {
+        lastSeen: firebase.firestore.FieldValue.serverTimestamp(),
+        isOnline: true,
+      },
+      { merge: true }
+    );
+    router.push("/");
+  };
+
   return (
     <Container>
       <Header>
-        <Link href="/">
+        <div onClick={() => sendBack()}>
           <ResponsiveIconButton>
             <IconButton style={{ paddingRight: 0, color: "#b5b7c2" }}>
               <ArrowBackIosIcon style={{ fontSize: 30, color: "#b5b7c2" }} />
             </IconButton>
           </ResponsiveIconButton>
-        </Link>
+        </div>
         <StyledBadge
           invisible={!recipient?.isOnline}
           overlap="circle"

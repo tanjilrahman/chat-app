@@ -30,7 +30,7 @@ function Chat({ chat, messages }) {
       },
       { merge: true }
     );
-  }, []);
+  }, [user]);
 
   //RequestDialog
   const [open, setOpen] = useState(false);

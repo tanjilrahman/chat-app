@@ -20,18 +20,10 @@ const MyApp = ({ Component, pageProps }) => {
 
   useEffect(() => {
     window.addEventListener("beforeunload", handleTabBlur);
-    window.addEventListener("blur", handleTabBlur);
-    window.addEventListener("focus", handleTabFocus);
     document.addEventListener("beforeunload", handleTabBlur);
-    document.addEventListener("blur", handleTabBlur);
-    document.addEventListener("focus", handleTabFocus);
     return () => {
       window.removeEventListener("beforeunload", handleTabBlur);
-      window.removeEventListener("blur", handleTabBlur);
-      window.removeEventListener("focus", handleTabFocus);
       document.removeEventListener("beforeunload", handleTabBlur);
-      document.removeEventListener("blur", handleTabBlur);
-      document.removeEventListener("focus", handleTabFocus);
     };
   });
   useEffect(() => {

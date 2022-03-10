@@ -59,7 +59,7 @@ function Chat({ id, users }) {
     const now = moment().unix();
     const seen = moment(recipient?.lastSeen?.toDate())?.unix();
     const diff = now - seen;
-    if (diff > 20) {
+    if (diff > 30) {
       db.collection("users").doc(recipientSnapshot?.docs?.[0]?.id).set(
         {
           isOnline: false,
